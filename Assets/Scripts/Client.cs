@@ -13,7 +13,7 @@ public class Client
         this.id = id;
         this.nickname = nickname;
         this.privileges = privileges;
-        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Perfabs/Controllers/Player"));
+        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/Player"));
     }
 
     public GameObject GetController() {
@@ -21,6 +21,6 @@ public class Client
     }
     public void SetController(string controllerName) {
         MonoBehaviour.Destroy(playerModel);
-        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Perfabs/Controllers/" + controllerName));
+        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
     }
 }
