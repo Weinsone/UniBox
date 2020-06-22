@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameLevel : MonoBehaviour { // ща по жопе получишь. ой извените
+public class GameLevel : MonoBehaviour
+{
     public static Client LocalPlayer { get; private set; }
     public static string PidoraTest { get; private set; } = "vy gej";
     public static bool multiplayerMode;
@@ -17,10 +18,10 @@ public class GameLevel : MonoBehaviour { // ща по жопе получишь.
     }
 
     void Update() {
-        handler.ReadInput();
+        handler.ReadKeyInput();
     }
 
     void LateUpdate() {
-        handler.ReadViewInput();
+        handler.ReadMouseInput();
     }
 }

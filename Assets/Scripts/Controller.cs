@@ -9,7 +9,8 @@ public class Controller : MonoBehaviour
     GameObject mainCamera;
     private Vector3 movement;
     private CharacterController charController;
-    private float speed = 5, gravity = -2, jumpForce = 5;
+    private bool isGrounded;
+    private float speed = 5, verticalSpeed, gravity = -1, terminaVelocity = -10, jumpForce = 20;
 
     void Start() {
         charController = GetComponent<CharacterController>();
@@ -18,8 +19,14 @@ public class Controller : MonoBehaviour
 
     // Падение и AI
     void Update() {
-        if (!charController.isGrounded)
-            Move(0, gravity, 0);
+        if (verticalSpeed > terminaVelocity) {
+            verticalSpeed += gravity;
+        }
+
+        Debug.Log("Vert Sp is " + verticalSpeed);
+        Move(0, verticalSpeed, 0);
+
+        isGrounded = charController.isGrounded; Debug.Log(isGrounded);
     }
 
     public void View(float x, float y) {
@@ -32,11 +39,13 @@ public class Controller : MonoBehaviour
         movement.y = y;
         movement.z = z * speed;
         charController.Move(movement * Time.deltaTime);
-        Debug.Log("Char movement is " + movement);
     }
 
     public void Jump() {
-        if (charController.isGrounded)
-            Move(0, jumpForce, 0);
+        Debug.Log($"Короче, слушай, божье слово: {isGrounded}");
+        if (isGrounded) {
+            // Move(0, verticalSpeed, 0);
+            verticalSpeed = jumpForce;
+        }
     }
 }
