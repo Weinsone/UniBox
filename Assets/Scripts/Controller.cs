@@ -9,8 +9,10 @@ public class Controller : MonoBehaviour
     GameObject mainCamera;
     private Vector3 movement;
     private CharacterController charController;
+    [SerializeField]
     private bool isGrounded;
-    private float speed = 5, verticalSpeed, gravity = -1, terminaVelocity = -10, jumpForce = 20;
+    [SerializeField]
+    private float speed = 5, verticalSpeed, gravity = -0.4f, terminaVelocity = -10, jumpForce = 15;
 
     void Start() {
         charController = GetComponent<CharacterController>();
