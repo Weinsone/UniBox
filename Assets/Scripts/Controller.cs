@@ -9,12 +9,12 @@ public class Controller : MonoBehaviour
     GameObject mainCamera;
     private Vector3 movement;
     private CharacterController charController;
-    private float speed = 5, gravity = -1, jumpForce = 5;
+    private float speed = 5, gravity = -2, jumpForce = 5;
 
     void Start() {
         charController = GetComponent<CharacterController>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-    }
+    } 
 
     // Падение и AI
     void Update() {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-class GameLevel : MonoBehaviour {
+public class GameLevel : MonoBehaviour { // ща по жопе получишь. ой извените
     public static Client LocalPlayer { get; private set; }
     public static bool multiplayerMode;
 
@@ -12,6 +12,4 @@ class GameLevel : MonoBehaviour {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам)
         }
     }
-    
-    
 }
