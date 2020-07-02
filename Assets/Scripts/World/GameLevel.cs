@@ -22,10 +22,9 @@ public class GameLevel : MonoBehaviour
     private void Update() {
         if (InputHandler.IsMovementKeyPressed) {
             LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, -1 - нажата S, аналогично с A, D
-
-            if (InputHandler.JumpInput) {
-                LocalPlayer.Controller.Jump();
-            }
+        }
+        if (InputHandler.JumpInput) {
+            LocalPlayer.Controller.Jump();
         }
     }
 

@@ -16,7 +16,7 @@ public static class InputHandler
             VerticalKeyInput = Input.GetAxis("Vertical");
             JumpInput = Input.GetKey(KeyCode.Space); // можно попробовать GetButtonDown()
 
-            if (JumpInput || HorizontalKeyInput != 0 || VerticalKeyInput != 0) {
+            if (HorizontalKeyInput != 0 || VerticalKeyInput != 0) {
                 return true;
             } else {
                 return false;

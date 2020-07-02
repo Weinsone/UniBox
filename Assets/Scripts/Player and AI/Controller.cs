@@ -44,8 +44,10 @@ public class Controller : MonoBehaviour
         targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
         movement = targetCamera.TransformDirection(movement);
 
+        // if (tipa thirdpersonenabled) {
         Quaternion dir = Quaternion.LookRotation(movement);
         transform.rotation = Quaternion.Lerp(transform.rotation, dir, rotationSpeed * Time.deltaTime);
+        // }
 
         ApplyMovement();
     }
