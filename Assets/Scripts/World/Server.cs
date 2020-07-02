@@ -4,8 +4,17 @@ using UnityEngine;
 
 public static class Server
 {
-    public static List<GameObject> clients = new List<GameObject>();
-    public static void AddClient(GameObject client) => clients.Add(client);
+    public static List<Player> Clients { get; private set; } = new List<Player>();
 
-    
+    public static void AddClient(Player client) {
+        Clients.Add(client);
+    }
+
+    public static void LocalPlayerUpdatePosition(Vector3 position) {
+
+    }
+
+    public static void AllPlayerUpdatePosition(Vector3 position) {
+
+    }
 }

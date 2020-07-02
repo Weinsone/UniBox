@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Client
+public class Player
 {
     public GameObject PlayerModel { get; private set; }
     public Controller Controller { get; private set; }
@@ -10,7 +10,7 @@ public class Client
     public string nickname;
     public Privileges privileges;
 
-    public Client(int id, string nickname, Privileges privileges) {
+    public Player(int id, string nickname, Privileges privileges) {
         this.id = id;
         this.nickname = nickname;
         this.privileges = privileges;
