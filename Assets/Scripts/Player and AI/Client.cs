@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Client
 {
-    private GameObject playerModel;
+    public GameObject PlayerModel { get; private set; }
+    public Controller Controller { get; private set; }
     public int id;
     public string nickname;
     public Privileges privileges;
@@ -13,14 +14,16 @@ public class Client
         this.id = id;
         this.nickname = nickname;
         this.privileges = privileges;
-        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/Player"));
+        PlayerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/Player"));
+        Controller = PlayerModel.GetComponent<Controller>();
     }
 
     public GameObject GetController() {
-        return playerModel;
+        return PlayerModel;
     }
     public void SetController(string controllerName) {
-        MonoBehaviour.Destroy(playerModel);
-        playerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
+        MonoBehaviour.Destroy(PlayerModel);
+        PlayerModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
+        Controller = PlayerModel.GetComponent<Controller>();
     }
 }

@@ -1,27 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+    Тупо батя: отвечает игровой цикл
+*/
 public class GameLevel : MonoBehaviour
 {
-    public static Client LocalPlayer { get; private set; }
-    public static CameraController PlayerCamera { get; private set; }
-    public static bool isMultiplayerMode;
+    public static Client LocalPlayer { get; private set; } // Локальный игрок и его тушка
+    public static CameraController PlayerCamera { get; private set; } // прекол, но судя по кода - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от тушки игрока, то все норм
+    public static bool isMultiplayerMode; // нужно перенести в класс Server
 
     void Start() {
-        LocalPlayer = new Client(Server.clients.Count, "Player", Privileges.admin);
+        LocalPlayer = new Client(Server.clients.Count, "Local Player", Privileges.admin);
         PlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
-        InputHandler.Initialize(LocalPlayer, PlayerCamera);
         if (isMultiplayerMode) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам)
         }
     }
 
     void Update() {
-        InputHandler.ReadKeyInput();
+        LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, 0, InputHandler.VerticalKeyInput); // 1 - нажата W, -1 - нажата S, аналогично с A, D
+
+        if (InputHandler.IsJumpKeyPressed()) {
+            LocalPlayer.Controller.Jump();
+        }
     }
 
     void LateUpdate() {
-        InputHandler.ReadMouseInput();
+        PlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
+        PlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position);
     }
 }
