@@ -15,13 +15,13 @@ public class GameLevel : MonoBehaviour
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin);
         PlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
         if (isMultiplayerMode) {
-            // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам)
+            // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
         }
     }
 
     private void Update() {
-        if (InputHandler.IsMovementKeyPressed) {
-            LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, -1 - нажата S, аналогично с A, D
+        if (InputHandler.IsMovementKeyPressed) { // Эта проверка нужна чтоб каждый кадр лишний раз не вызывались методы класса LocalPlayer.Controller
+            LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, (-1) - нажата S, аналогично с A, D
         }
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();

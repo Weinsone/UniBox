@@ -23,14 +23,15 @@ public static class InputHandler
             }
         }
     }
+    // Для мышки нужно тоже саме сделать, как в IsMovementKeyPressed
     public static float HorizontalMouseInput {
         get {
-            return Input.GetAxis("Mouse X") * 5 /* sensitivity */;
+            return Input.GetAxis("Mouse X") * 5 /* * sensitivity */;
         }
     }
     public static float VerticalMouseInput {
         get {
-            return Input.GetAxis("Mouse Y") * 5 /* sensitivity */;
+            return Input.GetAxis("Mouse Y") * 5 /* * sensitivity */;
         }
     }
 }
