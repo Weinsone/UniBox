@@ -10,7 +10,7 @@ public class Controller : MonoBehaviour
 {
     private Vector3 movement;
     private CharacterController charController;
-    [SerializeField] private bool isGrounded, isThirdPerson;
+    [SerializeField] private bool isGrounded;
     [SerializeField] private float speed = 5, verticalSpeed, gravity = -0.4f, terminaVelocity = -10, jumpForce = 15, rotationSpeed = 5; // заменить бы на int, чтоб быстрее работало
     // public Vector3 eyeLevel; // local transform
 
@@ -18,7 +18,6 @@ public class Controller : MonoBehaviour
         charController = GetComponent<CharacterController>();
     } 
 
-    // Падение
     private void Update() {
         Falling();
         isGrounded = charController.isGrounded;

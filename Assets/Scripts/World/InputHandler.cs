@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-// Только для локального игрока
+/*
+    Только для локального игрока
+*/
 public static class InputHandler
 {
     // private static float horizontalMouseInput, verticalMouseInput;

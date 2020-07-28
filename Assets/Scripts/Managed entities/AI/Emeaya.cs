@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+    УХАХАХА, ЕМЕАЯ ВОЗВРАЩАЕТСЯ
+*/
 public class Emeaya : ManagedEntity, IBotBase
 {
     public IBotBehavior Behavior { get; set; }
