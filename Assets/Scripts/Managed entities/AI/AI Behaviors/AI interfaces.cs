@@ -22,6 +22,7 @@ public interface IBot
 }
 
 public interface IBotBehavior {
-    IBot Root { get; set; }
+    IBot Root { get; set; } // кажись костыль. Допустим, в случае OnTargetFound нужно издать специфич. звук бота, то как это сделать без этого поля?
+    AIManager Ai { get; set; }
     void Checkup(); // Момент простоя (ну там ходить кругами, либо просто тупить в стену с анимацией)
 }

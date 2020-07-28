@@ -29,7 +29,7 @@ public class GameLevel : MonoBehaviour
 
         // Временно:
             if (Input.GetKeyUp(KeyCode.C)) {
-                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.aggressive, ControllerList.Controllers.player, 60, 100));
+                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.player, 60, 100));
             }
         // Работает (づ￣ 3￣)づ
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 /*
-    УХАХАХА, ЕМЕАЯ ВОЗВРАЩАЕТСЯ
+    Бот обыкновенный
 */
 public class Bot : ManagedEntity, IBot
 {

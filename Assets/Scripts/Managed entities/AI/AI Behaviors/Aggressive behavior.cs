@@ -5,13 +5,15 @@ using UnityEngine;
 public class AggressiveBehavior : IBotBehavior
 {
     public IBot Root { get; set; } // кажись костыль. Допустим, в случае OnTargetFound нужно издать специфич. звук бота, то как это сделать без этого поля?
+    public AIManager Ai { get; set; }
 
     public AggressiveBehavior(IBot root) {
         Root = root;
+        Ai = new AIManager();
     }
 
     public void Checkup() {
-        if (AIManager.IsEnemyInView(Root.EntityModel.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
+        if (Ai.IsEnemyInView(Root.EntityModel.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
             OnTargetFound();
         } else {
             DailyRoutine();
@@ -24,7 +26,7 @@ public class AggressiveBehavior : IBotBehavior
 
     private void OnTargetFound() {
         Debug.Log("А вот и маслята");
-        Root.Shoot(AIManager.EnemyPosition);
+        Root.Shoot(Ai.TargetPosition);
     }
 
     private void OnTargetLost() {

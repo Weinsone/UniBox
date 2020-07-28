@@ -37,8 +37,7 @@ public static class BotBehaviorList {
             case Behaviors.passive:
                 return new PassiveBehavior(root);
             case Behaviors.follower:
-
-                return null;
+                return new FollowerBehavior(root);
             default:
                 return null;
         }
