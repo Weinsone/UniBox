@@ -7,33 +7,43 @@ using UnityEngine;
 */
 public class GameLevel : MonoBehaviour
 {
-    public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка
-    public static CameraController PlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
-    public static bool isMultiplayerMode; // нужно перенести в класс Server, типа Server.IsEnabled
+    public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
+    public static CameraController LocalPlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
 
     private void Start() {
-        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin);
-        PlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
-        if (isMultiplayerMode) {
+        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.player);
+        LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
+        if (Server.isHost) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
+            Server.Targets.Add(LocalPlayer.EntityModel.transform);
         }
     }
 
     private void Update() {
         if (InputHandler.IsMovementKeyPressed) { // Эта проверка нужна чтоб каждый кадр лишний раз не вызывались методы класса LocalPlayer.Controller
-            LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, (-1) - нажата S, аналогично с A, D
+            LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, (-1) - нажата S, аналогично с A (1), D (-1)
         }
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();
         }
+
+        // Временно:
+            if (Input.GetKeyUp(KeyCode.C)) {
+                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.aggressive, ControllerList.Controllers.player, 60, 100));
+            }
+        // Работает (づ￣ 3￣)づ
     }
 
     private void LateUpdate() {
-        PlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
-        PlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position);
+        LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
+        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position);
     }
 
     private void FixedUpdate() {
+        foreach (var bot in Server.Bots) {
+            bot.Behavior.Checkup();
+        }
+
         // чё-то типа Server.UpdatePosition(LocalPlayer.Controller.transform.position);
     }
 }

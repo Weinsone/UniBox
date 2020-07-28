@@ -40,7 +40,7 @@ public class Controller : MonoBehaviour
         movement.x = x * speed;
         movement.z = z * speed;
 
-        Transform targetCamera = GameLevel.PlayerCamera.Camera.transform;
+        Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
         targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
         movement = targetCamera.TransformDirection(movement);
 
