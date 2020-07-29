@@ -25,12 +25,13 @@ public class FollowerBehavior : IBotBehavior
     }
 
     private void OnTargetFound() {
-        Vector2 dir = Ai.TargetPosition - Root.EntityModel.transform.position;
+        Vector3 dir = Ai.TargetPosition - Root.EntityModel.transform.position;
+        dir.y = Root.EntityModel.transform.position.y;
         Debug.DrawLine(Root.EntityModel.transform.position, dir, Color.white);
         Root.EntityModel.transform.LookAt(dir);
-        if (Vector3.Distance(Root.EntityModel.transform.position, Ai.TargetPosition) > 3) {
-            Root.EntityModel.transform.position = Vector3.Lerp(Root.EntityModel.transform.position, Ai.TargetPosition, 1 * Time.deltaTime);
-        }
+        // if (Vector3.Distance(Root.EntityModel.transform.position, Ai.TargetPosition) > 3) {
+        //     Root.EntityModel.transform.position = Vector3.Lerp(Root.EntityModel.transform.position, Ai.TargetPosition, 1 * Time.deltaTime);
+        // }
     }
 
     private void OnTargetLost() {
