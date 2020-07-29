@@ -39,16 +39,16 @@ public class GameLevel : MonoBehaviour
         LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position);
     }
 
-    int kek = 0;
+    // int kek = 0;
     private void FixedUpdate() {
-        if (kek == 10) {
+        // if (kek == 10) { // Таймер от бога
             foreach (var bot in Server.Bots) {
                 bot.Behavior.Checkup();
             }
-            kek = 0;
-        } else {
-            kek++;
-        }
+            // kek = 0;
+        // } else {
+            // kek++;
+        // }
 
         // чё-то типа Server.UpdatePosition(LocalPlayer.Controller.transform.position);
     }

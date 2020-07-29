@@ -17,10 +17,10 @@ public class AIManager
                 if (dot < 1) {
                     float angleRadians = Mathf.Acos(dot);
                     result = angleRadians * Mathf.Rad2Deg <= viewAngle;
-                    Debug.Log($"Подсчет говна гласит: {result}; Рептилоидный angle: {angleRadians}; Человеческий angle: {angleRadians * Mathf.Rad2Deg}\r\nЛол, а dot: {dot}");
+                    // Debug.Log($"Вы слышите голос с небес: {result}; Рептилоидный angle: {angleRadians}; Человеческий angle: {angleRadians * Mathf.Rad2Deg}\r\nЛол, а dot: {dot}");
                 } else {
                     result = true;
-                    Debug.Log("ОДИН НАХУЙ, ПРОШЕЛ ЕБАТЬ ψ(._. )> " + dot);
+                    // Debug.Log("ОДИН НАХУЙ, ПРОШЕЛ ЕБАТЬ ψ(._. )> " + dot);
                 }
             }
             if (result) { // пхаха, это все для того чтобы TargetPosition = target.position два раза в коде не писать
