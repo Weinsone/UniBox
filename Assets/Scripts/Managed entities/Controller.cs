@@ -12,7 +12,7 @@ public class Controller : MonoBehaviour
     private CharacterController charController;
     [SerializeField] private bool isGrounded;
     [SerializeField] private float speed = 5, verticalSpeed, gravity = -0.4f, terminaVelocity = -10, jumpForce = 15, rotationSpeed = 5; // заменить бы на int, чтоб быстрее работало
-    // public Vector3 eyeLevel; // local transform
+    public Vector3 EyeLevel;
 
     private void Start() {
         charController = GetComponent<CharacterController>();

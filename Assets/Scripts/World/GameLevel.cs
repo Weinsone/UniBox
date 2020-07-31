@@ -11,7 +11,7 @@ public class GameLevel : MonoBehaviour
     public static CameraController LocalPlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
 
     private void Start() {
-        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.player);
+        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
         if (Server.isHost) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
@@ -28,15 +28,15 @@ public class GameLevel : MonoBehaviour
         }
 
         // Временно:
-            if (Input.GetKeyUp(KeyCode.C)) {
-                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.player, 60, 100));
+            if (Input.GetKeyUp(KeyCode.F)) {
+                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
             }
         // Работает (づ￣ 3￣)づ
     }
 
     private void LateUpdate() {
         LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
-        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position);
+        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.EyeLevel);
     }
 
     // int kek = 0;

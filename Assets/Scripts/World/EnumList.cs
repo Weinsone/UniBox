@@ -9,13 +9,13 @@ public static class ControllerList
 {
     public enum Controllers
     {
-        player
+        mainPlayer
     }
 
     public static string Assign(Controllers controller) {
         switch (controller) {
-            case Controllers.player:
-                return "Player";
+            case Controllers.mainPlayer:
+                return "Assistant";
             default:
                 return null;
         }

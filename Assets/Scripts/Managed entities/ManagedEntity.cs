@@ -7,6 +7,7 @@ public abstract class ManagedEntity
     public int Id { get; set; }
     public string Name { get; set; }
     public GameObject EntityModel { get; private set; }
+    public Animator Animator { get; private set; }
     public Controller Controller { get; private set; }
     public float ViewAngle { get; set; }
     public float ViewDistance { get; set; }
