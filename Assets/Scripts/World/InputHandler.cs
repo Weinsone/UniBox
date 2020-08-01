@@ -10,18 +10,21 @@ public static class InputHandler
 
     public static float HorizontalKeyInput  { get; private set; }
     public static float VerticalKeyInput  { get; private set; }
-    public static bool JumpInput { get; private set; }
     public static bool IsMovementKeyPressed {
         get {
             HorizontalKeyInput = Input.GetAxis("Horizontal");
             VerticalKeyInput = Input.GetAxis("Vertical");
-            JumpInput = Input.GetKey(KeyCode.Space); // можно попробовать GetButtonDown()
 
             if (HorizontalKeyInput != 0 || VerticalKeyInput != 0) {
                 return true;
             } else {
                 return false;
             }
+        }
+    }
+    public static bool JumpInput {
+        get {
+            return Input.GetKey(KeyCode.Space); // можно попробовать GetButtonDown()
         }
     }
     // Для мышки нужно тоже саме сделать, как в IsMovementKeyPressed

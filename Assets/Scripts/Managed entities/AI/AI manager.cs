@@ -20,7 +20,6 @@ public class AIManager
                     // Debug.Log($"Вы слышите голос с небес: {result}; Рептилоидный angle: {angleRadians}; Человеческий angle: {angleRadians * Mathf.Rad2Deg}\r\nЛол, а dot: {dot}");
                 } else {
                     result = true;
-                    // Debug.Log("ОДИН НАХУЙ, ПРОШЕЛ ЕБАТЬ ψ(._. )> " + dot);
                 }
             }
             if (result) { // пхаха, это все для того чтобы TargetPosition = target.position два раза в коде не писать

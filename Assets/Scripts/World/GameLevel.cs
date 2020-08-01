@@ -26,17 +26,18 @@ public class GameLevel : MonoBehaviour
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();
         }
+        LocalPlayer.Animator.Animate();
 
         // Временно:
             if (Input.GetKeyUp(KeyCode.F)) {
-                Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
+                // Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
             }
         // Работает (づ￣ 3￣)づ
     }
 
     private void LateUpdate() {
         LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
-        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.EyeLevel);
+        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);
     }
 
     // int kek = 0;
@@ -45,9 +46,9 @@ public class GameLevel : MonoBehaviour
             foreach (var bot in Server.Bots) {
                 bot.Behavior.Checkup();
             }
-            // kek = 0;
+        //     kek = 0;
         // } else {
-            // kek++;
+        //     kek++;
         // }
 
         // чё-то типа Server.UpdatePosition(LocalPlayer.Controller.transform.position);

@@ -10,9 +10,9 @@ public class Controller : MonoBehaviour
 {
     private Vector3 movement;
     private CharacterController charController;
-    [SerializeField] private bool isGrounded;
-    [SerializeField] private float speed = 5, verticalSpeed, gravity = -0.4f, terminaVelocity = -10, jumpForce = 15, rotationSpeed = 5; // заменить бы на int, чтоб быстрее работало
-    public Vector3 EyeLevel;
+    public float speed, verticalSpeed, gravity, terminaVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
+    public bool IsGrounded { get; private set; }
+    public Vector3 eyeLevel;
 
     private void Start() {
         charController = GetComponent<CharacterController>();
@@ -20,7 +20,7 @@ public class Controller : MonoBehaviour
 
     private void Update() {
         Falling();
-        isGrounded = charController.isGrounded;
+        IsGrounded = charController.isGrounded;
     }
 
     private void ApplyMovement() {
@@ -44,17 +44,17 @@ public class Controller : MonoBehaviour
         targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
         movement = targetCamera.TransformDirection(movement);
 
-        // if (tipa thirdpersonenabled) {
-        Quaternion dir = Quaternion.LookRotation(movement);
-        transform.rotation = Quaternion.Lerp(transform.rotation, dir, rotationSpeed * Time.deltaTime);
+        // if (tipaIsThirdPersonEnabled) {
+            Quaternion dir = Quaternion.LookRotation(movement);
+            transform.rotation = Quaternion.Lerp(transform.rotation, dir, rotationSpeed);
         // }
 
         ApplyMovement();
     }
 
     public void Jump() {
-        if (isGrounded) {
+        if (IsGrounded) {
             verticalSpeed = jumpForce;
-        }
+        } // else { DoubleJump() } :D
     }
 }
