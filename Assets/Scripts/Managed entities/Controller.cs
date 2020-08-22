@@ -52,6 +52,10 @@ public class Controller : MonoBehaviour
         ApplyMovement();
     }
 
+    public void Look(Vector3 dir) {
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed);
+    }
+
     public void Jump() {
         if (IsGrounded) {
             verticalSpeed = jumpForce;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     Тупо батя: отвечает игровой цикл
-    Нужно будет переименовать класс, т.к его роль с контроллера уровня изменилась на управление игровым циклом (LocalServer? GameCycle?)
+    TODO: Нужно будет переименовать класс, т.к его роль с контроллера уровня изменилась на управление игровым циклом (LocalServer? GameCycle?)
 */
 public class GameLevel : MonoBehaviour
 {
@@ -26,31 +26,11 @@ public class GameLevel : MonoBehaviour
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();
         }
-        LocalPlayer.Animator.Animate();
-
-        // Временно:
-            if (Input.GetKeyUp(KeyCode.F)) {
-                // Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
-            }
-        // Работает (づ￣ 3￣)づ
+        LocalPlayer.Animator.Animate(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput);
     }
 
     private void LateUpdate() {
         LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
         LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);
-    }
-
-    // int kek = 0;
-    private void FixedUpdate() {
-        // if (kek == 10) { // Таймер от бога
-            foreach (var bot in Server.Bots) {
-                bot.Behavior.Checkup();
-            }
-        //     kek = 0;
-        // } else {
-        //     kek++;
-        // }
-
-        // чё-то типа Server.UpdatePosition(LocalPlayer.Controller.transform.position);
     }
 }

@@ -15,7 +15,7 @@ public static class ControllerList
     public static string Assign(Controllers controller) {
         switch (controller) {
             case Controllers.mainPlayer:
-                return "Scientist";
+                return "Assistant";
             default:
                 return null;
         }

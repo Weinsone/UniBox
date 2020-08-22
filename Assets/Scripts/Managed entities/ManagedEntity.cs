@@ -26,14 +26,15 @@ public abstract class ManagedEntity
     }
 
     public void SetController(string controllerName) {
-        Transform oldModelTransform = EntityModel.transform;
+        Transform previousModelTransform = EntityModel.transform;
 
         MonoBehaviour.Destroy(EntityModel);
         EntityModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
         Controller = EntityModel.GetComponent<Controller>();
 
-        EntityModel.transform.position = oldModelTransform.position;
-        EntityModel.transform.rotation = oldModelTransform.rotation;
+        EntityModel.transform.position = previousModelTransform.position;
+        EntityModel.transform.rotation = previousModelTransform.rotation;
+        EntityModel.transform.localScale = previousModelTransform.localScale;
     }
 
     public void GoTo(Vector3 position, bool immediately) {
