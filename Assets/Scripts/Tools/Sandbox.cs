@@ -26,6 +26,10 @@ public class Sandbox : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.R)) {
             PluginEngine.RefreshPlugins();
+            foreach(var plugin in PluginEngine.Plugins) {
+                plugin.Main();
+                Debug.Log("Test log");
+            }
         }
     }
 
