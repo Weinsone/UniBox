@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Sandbox : MonoBehaviour
 {
-    void Start()
-    {
+    void Start() {
         
     }
 
-    void Update()
-    {
+    void Update() {
         if (Input.GetKeyUp(KeyCode.F)) {
             // Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
             string code = @"
@@ -24,8 +22,10 @@ public class Sandbox : MonoBehaviour
                     }
                 }
             ";
-            PluginEngine.RefreshPlugins();
             PluginEngine.Compile(code, "Test");
+        }
+        if (Input.GetKeyUp(KeyCode.R)) {
+            PluginEngine.RefreshPlugins();
         }
     }
 

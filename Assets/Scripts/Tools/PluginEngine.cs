@@ -23,7 +23,7 @@ public interface IProgram : IPlugin { } // Для красоты xD
 
 public static class PluginEngine
 {
-    private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
+    // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
     public static List<IPlugin> Plugins { get; private set; } = new List<IPlugin>();
     public static string[] GetPluginsName
@@ -45,13 +45,14 @@ public static class PluginEngine
             assemblyName,
             syntaxTrees: new[] { syntaxTree },
             references: new[] {
-                MetadataReference.CreateFromFile(string.Format(runtimePath, "mscorlib")),
-                MetadataReference.CreateFromFile(string.Format(runtimePath, "System")),
-                MetadataReference.CreateFromFile(string.Format(runtimePath, "System.Core")),
+                // MetadataReference.CreateFromFile(string.Format(runtimePath, "mscorlib")),
+                // MetadataReference.CreateFromFile(string.Format(runtimePath, "System")),
+                // MetadataReference.CreateFromFile(string.Format(runtimePath, "System.Core")),
 
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location) },
-
+                MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location)
+            },
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         
         // using (MemoryStream dllStram = new MemoryStream()) {
@@ -113,7 +114,18 @@ public static class PluginEngine
     {
         // private static Script script;
         // private static ScriptState scriptState;
-        private static ScriptOptions scriptOptions = ScriptOptions.Default.WithImports("System", "System.Threading").AddReferences(typeof(GameLevel).Assembly);
+        private static ScriptOptions scriptOptions = ScriptOptions.Default
+            .WithImports(
+                "System",
+                "System.IO",
+                "System.Collections",
+                "System.Collections.Generic",
+                "UnityEngine"
+            ).AddReferences(
+                typeof(Server).Assembly,
+                typeof(ControllerList).Assembly,
+                typeof(BotBehaviorList).Assembly
+            );
 
         private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -135,7 +147,7 @@ public static class PluginEngine
             try {
                 CSharpScript.RunAsync(code, options: scriptOptions, cancellationToken: cancellationTokenSource.Token);
             } catch (Exception e) {
-                Debug.Log("Error: " + e.Message);
+                Debug.LogError("Error: " + e.Message);
             }
         }
 
