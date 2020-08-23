@@ -13,19 +13,19 @@ public class AnimationManager
     }
 
     public void Animate(float x, float y) {
-        // if (controller.IsGrounded) {
-        //     animator.SetBool("IsGrounded", true);
+        if (controller.IsGrounded) {
+            animator.SetBool("IsGrounded", true);
             
-        //     if (InputHandler.IsMovementKeyPressed) {
-        //         animator.SetBool("Running", true);
-        //     } else {
-        //         animator.SetBool("Running", false);
-        //     }
-        // } else {
-        //     animator.SetBool("IsGrounded", false);
-        // }
+            if (InputHandler.IsMovementKeyPressed) {
+                animator.SetBool("Running", true);
+            } else {
+                animator.SetBool("Running", false);
+            }
+        } else {
+            animator.SetBool("IsGrounded", false);
+        }
 
-        animator.SetFloat("X", x);
-        animator.SetFloat("Y", y);
+        // animator.SetFloat("X", x);
+        // animator.SetFloat("Y", y);
     }
 }

@@ -10,6 +10,8 @@ public class GameLevel : MonoBehaviour
     public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
     public static CameraController LocalPlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
 
+    public static VirtualMachine usedComputer; // Компьютер, который использует игрок. Необходим для вывода формы, т.к в ее конструкторе не указывается инфа о компе, куда она должна быть выведена
+
     private void Start() {
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));

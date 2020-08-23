@@ -19,7 +19,7 @@ public interface IPlugin
     string Description { get; }
     void Main();
 }
-public interface IProgram : IPlugin { } // Для красоты xD
+public interface IProgram : IPlugin { } // Для красоты (будет использоваться в виртуальных компах) xD
 
 public static class PluginEngine
 {
@@ -86,8 +86,7 @@ public static class PluginEngine
         }
     }
 
-    public static void RefreshPlugins()
-    {
+    public static void RefreshPlugins() {
         Plugins.Clear();
 
         DirectoryInfo pluginsDirectory = new DirectoryInfo(pluginFolderPath);
@@ -96,9 +95,9 @@ public static class PluginEngine
             return;
         }
 
-        string[] pluginFilesPath = Directory.GetFiles(pluginFolderPath, "*.dll");
-        foreach (var filePath in pluginFilesPath) {
-            Assembly assembly = Assembly.LoadFrom(filePath);
+        string[] files = Directory.GetFiles(pluginFolderPath, "*.dll");
+        foreach (var file in files) {
+            Assembly assembly = Assembly.LoadFrom(file);
             IEnumerable<Type> types = assembly.GetTypes()
                 .Where(t => t.GetInterfaces()
                 .Where(i => i.FullName == typeof(IPlugin).FullName).Any());
@@ -122,7 +121,7 @@ public static class PluginEngine
                 "System.Collections.Generic",
                 "UnityEngine"
             ).AddReferences(
-                typeof(Server).Assembly,
+                typeof(UnityEngine.Transform).Assembly,
                 typeof(ControllerList).Assembly,
                 typeof(BotBehaviorList).Assembly
             );

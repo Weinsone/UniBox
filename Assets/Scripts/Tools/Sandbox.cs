@@ -31,6 +31,9 @@ public class Sandbox : MonoBehaviour
                 Debug.Log("Test log");
             }
         }
+        if (Input.GetKeyUp(KeyCode.I)) {
+            PluginEngine.InteractiveSharp.Execute(@"Server.AddBot(new Bot(0, ""Classic Emeaya"", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));");
+        }
     }
 
     // int kek = 0;
