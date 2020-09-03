@@ -8,10 +8,10 @@ public class VirtualMachine : MonoBehaviour
     public Canvas screenCanvas;
 
     void Start() {
-        
+        // TODO: загрузка списка программ с сейв файла
     }
 
     public void Explode(int power) {
-
+        
     }
 }

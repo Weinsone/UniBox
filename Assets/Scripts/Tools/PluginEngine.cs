@@ -46,7 +46,7 @@ public static class PluginEngine
                 // MetadataReference.CreateFromFile(string.Format(runtimePath, "System.Core")),
 
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                // MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location)
             },
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
