@@ -19,25 +19,21 @@ public interface IPlugin
     string Description { get; }
     void Main();
 }
-public interface IProgram : IPlugin { } // Для красоты (будет использоваться в виртуальных компах) xD
+public interface IProgram : IPlugin { // Для виртуальных компов
+    Form Form { get; set; }
+}
 
 public static class PluginEngine
 {
     // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
+    private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
+    
+    public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
+    
     public static List<IPlugin> Plugins { get; private set; } = new List<IPlugin>();
-    public static string[] GetPluginsName
-    {
-        get {
-            string[] pluginsName = new string[Plugins.Count];
-            for (int i = 0; i < Plugins.Count; i++) {
-                pluginsName[i] = Plugins[i].Name;
-            }
-            return pluginsName;
-        }
-    }
 
-    public static void Compile(string code, string assemblyName, bool toSave = true)
+    public static bool Compile(string code, string assemblyName, bool isProgramCompilation)
     {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
@@ -65,7 +61,8 @@ public static class PluginEngine
         // }
 
         try {
-            EmitResult emitResult = compilation.Emit(Path.Combine(pluginFolderPath, $"{assemblyName}.dll"));
+            EmitResult emitResult = compilation.Emit(Path.Combine(isProgramCompilation ? programFolderPath : pluginFolderPath, $"{assemblyName}.dll"));
+
             if (!emitResult.Success) {
                 string errorMessage = string.Empty;
 
@@ -78,15 +75,54 @@ public static class PluginEngine
                 }
 
                 Debug.LogError(errorMessage);
+                return false;
             } else {
                 Debug.Log("Success");
+                return true;
             }
         } catch (Exception e) {
             Debug.LogError(e.Message);
+            return false;
         }
     }
 
-    public static void RefreshPlugins() {
+    public static IProgram GetProgram(string programName) {
+        foreach (var program in Programs) {
+            if (program.Name == programName) {
+                return program;
+            }
+        }
+        return null;
+    }
+
+    public static void GetPlugin() {
+
+    }
+
+    public static void RefreshPrograms() { // TODO: Необходимо объединить с RefreshPlugins()
+        Programs.Clear();
+
+        DirectoryInfo programsDirectory = new DirectoryInfo(programFolderPath);
+        if (!programsDirectory.Exists) {
+            programsDirectory.Create();
+            return;
+        }
+
+        string[] files = Directory.GetFiles(programFolderPath, "*.dll");
+        foreach (var file in files) {
+            Assembly assembly = Assembly.LoadFrom(file);
+            IEnumerable<Type> types = assembly.GetTypes()
+                .Where(t => t.GetInterfaces()
+                .Where(i => i.FullName == typeof(IProgram).FullName).Any());
+
+            foreach (var type in types) {
+                IProgram program = assembly.CreateInstance(type.FullName) as IProgram;
+                Plugins.Add(program);
+            }
+        }
+    }
+
+    public static void RefreshPlugins() { // TODO: Необходимо объединить с RefreshPrograms()
         Plugins.Clear();
 
         DirectoryInfo pluginsDirectory = new DirectoryInfo(pluginFolderPath);
@@ -107,6 +143,14 @@ public static class PluginEngine
                 Plugins.Add(plugin);
             }
         }
+    }
+
+    public static void DeleteProgram(string programName) { // TODO: Необходимо объединить с DeletePlugin()
+
+    }
+
+    public static void DeletePlugin(string pluginName) { // TODO: Необходимо объединить с DeleteProgram()
+
     }
 
     public static class InteractiveSharp

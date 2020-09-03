@@ -22,7 +22,7 @@ public class Sandbox : MonoBehaviour
                     }
                 }
             ";
-            PluginEngine.Compile(code, "Test");
+            PluginEngine.Compile(code, "Test", false);
         }
         if (Input.GetKeyUp(KeyCode.R)) {
             PluginEngine.RefreshPlugins();

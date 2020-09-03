@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Form
 {
-    private Canvas computerScreen;
+    public Canvas computerScreen;
     private GameObject visualForm;
     private List<GameObject> formComponents = new List<GameObject>();
 
@@ -13,8 +13,7 @@ public class Form
     private string name;
 
     public Form(float position, float sizeX = 512, float sizeY = 512, string name = "Form") {
-        computerScreen = GameLevel.usedComputer.screenCanvas;
-        visualForm = MonoBehaviour.Instantiate((GameObject)Resources.Load("Forms/Form"));
+        visualForm = MonoBehaviour.Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form"));
         
         this.position = position;
         this.sizeX = sizeX;
