@@ -39,7 +39,7 @@ public class Form : MonoBehaviour
     }
 
     // Крутой костыль. И все из-за того что MonoBehaviour почему-то нельзя создавать через конструктор ._.
-    public static Form Initialize(int kek, Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+    public static Form Initialize(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
         Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
         
         form.computerScreen = target;
@@ -98,7 +98,7 @@ public class Form : MonoBehaviour
     }
 
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
-        GameObject component = MonoBehaviour.Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
+        GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
         component.transform.SetParent(transform.GetChild(1));
 
         RectTransform componentRect = component.GetComponent<RectTransform>();
@@ -125,8 +125,9 @@ public class Form : MonoBehaviour
 
     }
 
-    public void OnClose() {
-
+    public void OnClose(GameObject form) {
+        // *пафосная анимация*
+        Destroy(form);
     }
 
     public void OnMaximize() {

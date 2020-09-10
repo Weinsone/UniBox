@@ -13,7 +13,6 @@ public class Sandbox : MonoBehaviour
 
     void Start() {
         test = Form.Initialize(
-            kek: 1337,
             target: canvas,
             name: "Test",
             positionX: 50,
@@ -21,7 +20,6 @@ public class Sandbox : MonoBehaviour
         );
         test.AddComponent("button1", ComponentType.button);
         Button button1 = test.GetComponent<Button>("button1");
-        
     }
 
     void Update() {
