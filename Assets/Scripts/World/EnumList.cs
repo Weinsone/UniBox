@@ -1,3 +1,8 @@
+/*
+    Невошедшие:
+    FormComponents - Form.cs
+*/
+
 public enum Privileges
 {
     admin,

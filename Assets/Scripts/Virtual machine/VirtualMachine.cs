@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class VirtualMachine : MonoBehaviour
 {
-    public List<IProgram> installedPrograms;
+    private List<IProgram> installedPrograms;
+    
+    public IProgram ActiveProgram { get; set; }
     public Canvas screenCanvas;
 
     void Start() {

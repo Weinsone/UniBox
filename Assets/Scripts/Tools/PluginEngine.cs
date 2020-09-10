@@ -19,7 +19,7 @@ public interface IPlugin
     string Description { get; }
     void Main();
 }
-public interface IProgram : IPlugin { // Для виртуальных компов
+public interface IProgram : IPlugin {  // Для виртуальных компов
     Form Form { get; set; }
 }
 
@@ -29,12 +29,10 @@ public static class PluginEngine
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
     
-    public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
-    
     public static List<IPlugin> Plugins { get; private set; } = new List<IPlugin>();
+    // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
-    public static bool Compile(string code, string assemblyName, bool isProgramCompilation)
-    {
+    public static bool Compile(string code, string assemblyName, bool isProgramCompilation) {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
         CSharpCompilation compilation = CSharpCompilation.Create(
@@ -86,52 +84,28 @@ public static class PluginEngine
         }
     }
 
-    public static IProgram GetProgram(string programName) {
-        foreach (var program in Programs) {
-            if (program.Name == programName) {
-                return program;
+    public static T GetLibrary<T>(string name) where T: IPlugin {
+        foreach (var plugin in Plugins) {
+            if (plugin.Name == name) {
+                return (T)plugin;
             }
         }
-        return null;
+        return default(T);
     }
 
-    public static void GetPlugin() {
-
-    }
-
-    public static void RefreshPrograms() { // TODO: Необходимо объединить с RefreshPlugins()
-        Programs.Clear();
-
-        DirectoryInfo programsDirectory = new DirectoryInfo(programFolderPath);
-        if (!programsDirectory.Exists) {
-            programsDirectory.Create();
-            return;
-        }
-
-        string[] files = Directory.GetFiles(programFolderPath, "*.dll");
-        foreach (var file in files) {
-            Assembly assembly = Assembly.LoadFrom(file);
-            IEnumerable<Type> types = assembly.GetTypes()
-                .Where(t => t.GetInterfaces()
-                .Where(i => i.FullName == typeof(IProgram).FullName).Any());
-
-            foreach (var type in types) {
-                IProgram program = assembly.CreateInstance(type.FullName) as IProgram;
-                Plugins.Add(program);
-            }
-        }
-    }
-
-    public static void RefreshPlugins() { // TODO: Необходимо объединить с RefreshPrograms()
+    public static void RefreshLibraries<T>() where T: IPlugin {
+        bool isPlugin = typeof(T) == typeof(IPlugin);
+        string libraryFolder = isPlugin ? programFolderPath : pluginFolderPath;
+        
         Plugins.Clear();
 
-        DirectoryInfo pluginsDirectory = new DirectoryInfo(pluginFolderPath);
-        if (!pluginsDirectory.Exists) {
-            pluginsDirectory.Create();
+        DirectoryInfo libraryDirectory = new DirectoryInfo(libraryFolder);
+        if (!libraryDirectory.Exists) {
+            libraryDirectory.Create();
             return;
         }
 
-        string[] files = Directory.GetFiles(pluginFolderPath, "*.dll");
+        string[] files = Directory.GetFiles(libraryFolder, "*.dll");
         foreach (var file in files) {
             Assembly assembly = Assembly.LoadFrom(file);
             IEnumerable<Type> types = assembly.GetTypes()
@@ -139,7 +113,7 @@ public static class PluginEngine
                 .Where(i => i.FullName == typeof(IPlugin).FullName).Any());
 
             foreach (var type in types) {
-                IPlugin plugin = assembly.CreateInstance(type.FullName) as IPlugin;
+                IPlugin plugin = isPlugin ? plugin = assembly.CreateInstance(type.FullName) as IPlugin : plugin = assembly.CreateInstance(type.FullName) as IProgram;
                 Plugins.Add(plugin);
             }
         }
