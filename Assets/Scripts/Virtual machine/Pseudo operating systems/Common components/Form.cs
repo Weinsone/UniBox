@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,50 +14,92 @@ public enum ComponentType
     browser
 }
 
-public class Form
+public class Form : MonoBehaviour
 {
-    public Canvas computerScreen;
-    private GameObject visualForm;
+    private bool isFormMoving;
+    private RectTransform formRect;
     private Dictionary<string, GameObject> components = new Dictionary<string, GameObject>();
 
-    private float positionX, positionY;
-    private float sizeX, sizeY;
-    private string name;
+    public Canvas computerScreen;
 
-    public Form(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 512, float sizeY = 512) {
-        computerScreen = target;
+    // public Form(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+    //     computerScreen = target;
+
+    //     visualForm = MonoBehaviour.Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form"));
+    //     visualForm.transform.SetParent(computerScreen.transform);
+    //     formRect = visualForm.GetComponent<RectTransform>();
+
+    //     visualForm.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
+    //     SetFormPosition(positionX, positionY);
+    //     SetFormSize(sizeX, sizeY);
+    // }
+
+    private Form() {
+        // ТЫ ДАЖЕ НЕ ГРАЖДАНИН!
+    }
+
+    // Крутой костыль. И все из-за того что MonoBehaviour почему-то нельзя создавать через конструктор ._.
+    public static Form Initialize(int kek, Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+        Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
         
-        this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        form.computerScreen = target;
 
-        visualForm = MonoBehaviour.Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form"));
-        components.Add(name, visualForm);
-        visualForm.transform.SetParent(computerScreen.transform);
+        form.transform.SetParent(form.computerScreen.transform);
+        form.formRect = form.GetComponent<RectTransform>();
 
-        RectTransform formRect = visualForm.GetComponent<RectTransform>();
+        form.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
+        form.SetFormPosition(positionX, positionY);
+        form.SetFormSize(sizeX, sizeY);
+        
+        return form;
+    }
+
+    public void OnFormHeadClick() {
+        if (isFormMoving) {
+            isFormMoving = false;
+        } else {
+            Vector3 offset = formRect.position - Input.mousePosition;
+
+            isFormMoving = true;
+            StartCoroutine("FormMover", offset);
+        }
+    }
+
+    private IEnumerator FormMover(Vector3 offset) {
+        while(isFormMoving) {
+            // SetFormPosition(Input.mousePosition.x + offset.x, Input.mousePosition.y + offset.y); // TODO: брать курсор из InputHandler
+            formRect.position = Input.mousePosition + offset;
+            yield return null;
+        }
+    }
+
+    public void SetFormPosition(float positionX, float positionY) {
         formRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, formRect.rect.width);
         formRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, positionY, formRect.rect.height);
+    }
 
-        visualForm.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
+    public void SetFormSize(float sizeX, float sizeY) {
+        RectTransform formContentRect = transform.GetChild(1).GetComponent<RectTransform>();
+        formRect.sizeDelta = new Vector2(sizeX, formRect.sizeDelta.y);
+        // formRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
+        formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
+        formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0 + formRect.sizeDelta.y, sizeY);
     }
 
     public void Show() { // Устарело
         Vector3 oldScale = computerScreen.transform.localScale;
         computerScreen.transform.localScale = new Vector3(1, 1, 1);
 
-        visualForm.transform.position = computerScreen.transform.position;
-        visualForm.transform.rotation = computerScreen.transform.rotation;
-        visualForm.transform.SetParent(computerScreen.transform);
+        transform.position = computerScreen.transform.position;
+        transform.rotation = computerScreen.transform.rotation;
+        transform.SetParent(computerScreen.transform);
 
         computerScreen.transform.localScale = oldScale;
     }
 
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
         GameObject component = MonoBehaviour.Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
-        component.transform.SetParent(visualForm.transform.GetChild(1));
+        component.transform.SetParent(transform.GetChild(1));
 
         RectTransform componentRect = component.GetComponent<RectTransform>();
         componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
@@ -65,7 +108,7 @@ public class Form
         components.Add(name, component);
     }
 
-    public T GetComponentByName<T>(string componentName) {
+    public T GetComponent<T>(string componentName) {
         foreach(var component in components) {
             if (componentName == component.Key) {
                 return component.Value.GetComponent<T>();
@@ -74,8 +117,32 @@ public class Form
         return default(T);
     }
 
-    public void SetSize(string componentName, float sizeX, float sizeY) {
+    public void SetComponentPosition(string componentName, float positionX, float positionY) {
 
+    }
+
+    public void SetComponentSize(string componentName, float sizeX, float sizeY) {
+
+    }
+
+    public void OnClose() {
+
+    }
+
+    public void OnMaximize() {
+
+    }
+
+    public void OnMinimize() {
+
+    }
+
+    private IEnumerable PositionAnimation((float toX, float toY) parameters) {
+        return null;
+    }
+
+    private IEnumerator SizeAnimation((float toX, float toY) parameters) {
+        return null;
     }
 
     // public class Component

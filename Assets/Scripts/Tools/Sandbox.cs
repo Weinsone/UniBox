@@ -7,20 +7,25 @@ using UnityEngine.UI;
 */
 public class Sandbox : MonoBehaviour
 {
+    public float sizeX, sizeY;
     public Canvas canvas;
+    public Form test;
 
     void Start() {
-        Form test = new Form(
+        test = Form.Initialize(
+            kek: 1337,
             target: canvas,
-            name: "Test"
+            name: "Test",
+            positionX: 50,
+            positionY: 50
         );
         test.AddComponent("button1", ComponentType.button);
-        Button button1 = test.GetComponentByName<Button>("button1");
+        Button button1 = test.GetComponent<Button>("button1");
         
     }
 
     void Update() {
-        
+        test.SetFormSize(sizeX, sizeY);
 
         // if (Input.GetKeyUp(KeyCode.F)) {
         //     // Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
