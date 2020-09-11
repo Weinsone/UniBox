@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public enum ComponentType
 {
     button, // +
-    edit, // -
+    text, // +
+    toggle, // +
+    inputField, // +
     scrollBox, // -
     audio, // -
     video, // -
@@ -62,8 +64,6 @@ public class Form : MonoBehaviour
             Vector3 offset;
             if (computerScreen.renderMode == RenderMode.WorldSpace) {
                 offset = formRect.position - Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
-                Debug.Log("World space offset is " + offset);
-                Debug.Log("aaaa: " + Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point);
             } else {
                 offset = formRect.position - Input.mousePosition;
             }
@@ -74,14 +74,12 @@ public class Form : MonoBehaviour
     }
 
     private IEnumerator FormMover(Vector3 offset) {
-        while(isFormMoving) {
+        while (isFormMoving) {
             // SetFormPosition(Input.mousePosition.x, Input.mousePosition.y); // TODO: брать курсор из InputHandler
             if (computerScreen.renderMode == RenderMode.WorldSpace) {
                 formRect.position = Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset;
-                Debug.Log("Fffform: " + formRect.anchoredPosition + "; Mouse: " + Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point);
             } else {
                 formRect.position = Input.mousePosition + offset;
-                Debug.Log("Form: " + formRect.anchoredPosition + "; Mouse: " + Input.mousePosition);
             }
             yield return null;
         }
@@ -111,6 +109,15 @@ public class Form : MonoBehaviour
         computerScreen.transform.localScale = oldScale;
     }
 
+    public GameObject GetFormComponent(string componentName) {
+        foreach (var component in components) {
+            if (componentName == component.Key) {
+                return component.Value;
+            }
+        }
+        return default;
+    }
+
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
         GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
         // component.transform.SetParent(transform.GetChild(1));
@@ -123,8 +130,8 @@ public class Form : MonoBehaviour
         components.Add(name, component);
     }
 
-    public T GetComponent<T>(string componentName) {
-        foreach(var component in components) {
+    public T GetComponentProperties<T>(string componentName) {
+        foreach (var component in components) {
             if (componentName == component.Key) {
                 return component.Value.GetComponent<T>();
             }
@@ -133,11 +140,26 @@ public class Form : MonoBehaviour
     }
 
     public void SetComponentPosition(string componentName, float positionX, float positionY) {
-
+        foreach (var component in components) {
+            if (component.Key == componentName) {
+                RectTransform componentRect = component.Value.GetComponent<RectTransform>();
+                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
+                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, positionY, componentRect.rect.height);
+                break;
+            }
+        }
     }
 
     public void SetComponentSize(string componentName, float sizeX, float sizeY) {
-
+        foreach (var component in components) {
+            if (component.Key == componentName) {
+                RectTransform componentRect = component.Value.GetComponent<RectTransform>();
+                // componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
+                // componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, sizeY);
+                componentRect.sizeDelta = new Vector2(sizeX, sizeY);
+                break;
+            }
+        }
     }
 
     public void OnClose(GameObject form) {

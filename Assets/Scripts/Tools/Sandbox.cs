@@ -7,29 +7,43 @@ using UnityEngine.UI;
 */
 public class Sandbox : MonoBehaviour
 {
-    public float sizeX, sizeY;
+    private Form form;
     public Canvas canvas;
-    public Form test;
+    string errors;
 
     void Start() {
-        test = Form.Initialize(
+        form = Form.Initialize(
             target: canvas,
-            name: "Test",
-            positionX: 50,
-            positionY: 50
+            name: "Crap IDE",
+            positionX: 400,
+            positionY: 200,
+            sizeX: 450,
+            sizeY: 300
         );
-        test.AddComponent("button1", ComponentType.button);
-        Button button1 = test.GetComponent<Button>("button1");
-        button1.onClick.AddListener(() => Kek("кек"));
-    }
+        form.AddComponent("CodeField", ComponentType.inputField);
+        form.AddComponent("ErrorList", ComponentType.text);
+        form.AddComponent("CompileButton", ComponentType.button);
 
-    void Kek(string someText) {
-        Debug.Log("тхе батон хас бен клицкед анд споке " + someText);
+        form.SetComponentSize("CodeField", 440, 250);
+        form.SetComponentSize("ErrorList", 275, 30);
+        // test.SetComponentSize("CompileButton", 160, 30); // default value
+
+        form.SetComponentPosition("CodeField", 5, 5);
+        form.SetComponentPosition("ErrorList", 5, 264);
+        form.SetComponentPosition("CompileButton", 285, 264);
+
+        GameObject codeField = form.GetFormComponent("CodeField");
+        InputField codeFieldProperties = codeField.GetComponent<InputField>();
+        Text errorList = form.GetComponentProperties<Text>("ErrorList");
+        Button compileButton = form.GetComponentProperties<Button>("CompileButton");
+
+        codeField.transform.GetChild(0).GetComponent<Text>().text = "Enter your code";
+        codeFieldProperties.lineType = InputField.LineType.MultiLineNewline;
+        errorList.text = "No problems have been detected";
+        compileButton.onClick.AddListener(() => PluginEngine.Compile(codeField.transform.GetChild(2).GetComponent<Text>().text, "IdeTest", true));
     }
 
     void Update() {
-        test.SetFormSize(sizeX, sizeY);
-
         // if (Input.GetKeyUp(KeyCode.F)) {
         //     // Server.AddBot(new Bot(0, "Classic Emeaya", BotBehaviorList.Behaviors.follower, ControllerList.Controllers.mainPlayer, 60, 100));
         //     string code = @"
