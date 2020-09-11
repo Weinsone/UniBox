@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     Тупо батя: отвечает игровой цикл
-    TODO: Нужно будет переименовать класс, т.к его роль с контроллера уровня изменилась на управление игровым циклом (LocalServer? GameCycle?)
+    TODO: Нужно будет переименовать класс, т.к его роль с контроллера уровня изменилась на управление игровым циклом (LocalServer? GameCycle?) да не и так норм
 */
 public class GameLevel : MonoBehaviour
 {
     public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
     public static CameraController LocalPlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
-
-    public static VirtualMachine usedComputer; // Компьютер, который использует игрок. Необходим для вывода формы, т.к в ее конструкторе не указывается инфа о компе, куда она должна быть выведена
 
     private void Start() {
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
@@ -32,7 +30,12 @@ public class GameLevel : MonoBehaviour
     }
 
     private void LateUpdate() {
-        LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
+        if (InputHandler.IsCursorShowKeyPressed) {
+            PlayerMenu.ShowCursor();
+        } else {
+            PlayerMenu.HideCursor();
+            LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
+        }
         LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);
     }
 }

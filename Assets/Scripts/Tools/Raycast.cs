@@ -4,9 +4,8 @@ using UnityEngine;
 
 public static class Raycast
 {
-    private static RaycastHit hit;
-    
-    public static RaycastHit GetRayHit(Ray ray) {
+    public static RaycastHit GetRayHit(Ray ray, int layer = 1 << 0) {
+        RaycastHit hit;
         if (Physics.Raycast(ray, out hit)) {
             return hit;
         }
@@ -14,7 +13,8 @@ public static class Raycast
         return default;
     }
 
-    public static RaycastHit GetRayHit(Vector3 origin, Vector3 direction) { // эТА шТУкА ЧЕТО НЕ раБотаЕТ
+    public static RaycastHit GetRayHit(Vector3 origin, Vector3 direction, int layer = 1 << 0) { // эТА шТУкА ЧЁТО НЕ раБотаЕТ
+        RaycastHit hit;
         if (Physics.Raycast(origin, direction, out hit)) {
             return hit;
         }

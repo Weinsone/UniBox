@@ -15,12 +15,10 @@ public class CameraController
     }
 
     public void View(float x, float y) {
-        if (!Input.GetKey(KeyCode.C)) { // Debug
-            this.x += x;
-            this.y += y;
-            this.y = Mathf.Clamp(this.y, -90, 90);
-            rotation = Quaternion.AngleAxis(this.x, Vector3.up) * Quaternion.AngleAxis(-this.y, Vector3.right);
-        }
+        this.x += x;
+        this.y += y;
+        this.y = Mathf.Clamp(this.y, -90, 90);
+        rotation = Quaternion.AngleAxis(this.x, Vector3.up) * Quaternion.AngleAxis(-this.y, Vector3.right);
     }
 
     public void UpdatePosition(Vector3 target) {

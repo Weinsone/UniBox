@@ -27,6 +27,11 @@ public static class InputHandler
             return Input.GetKey(KeyCode.Space); // можно попробовать GetButtonDown()
         }
     }
+    public static bool IsCursorShowKeyPressed {
+        get {
+            return Input.GetKey(KeyCode.C);
+        }
+    }
     // Для мышки нужно тоже саме сделать, как в IsMovementKeyPressed
     public static float HorizontalMouseInput {
         get {

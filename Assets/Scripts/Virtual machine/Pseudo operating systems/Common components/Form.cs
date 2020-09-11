@@ -22,7 +22,7 @@ public class Form : MonoBehaviour
     private RectTransform formRect;
     private Dictionary<string, GameObject> components = new Dictionary<string, GameObject>();
 
-    public Canvas computerScreen;
+    public Canvas computerScreen = GameLevel.LocalPlayer.usingComputer.screenCanvas;
 
     // public Form(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
     //     computerScreen = target;
@@ -44,7 +44,7 @@ public class Form : MonoBehaviour
     public static Form Initialize(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
         Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
         
-        form.computerScreen = target;
+        // form.computerScreen = target;
 
         // form.transform.SetParent(form.computerScreen.transform);
         form.Show(form.transform.gameObject, form.computerScreen.transform.gameObject, 0);
