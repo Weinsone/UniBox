@@ -23,7 +23,7 @@ public class FormButtonHandler : MonoBehaviour // TODO: все прямые вы
         IProgram virtualProgram = PluginEngine.GetLibrary<IProgram>(programName);
         if (virtualProgram != null) {
             virtualProgram.Form.computerScreen = target;
-            virtualProgram.Form.Show();
+            // virtualProgram.Form.Show();
         } else {
             Debug.LogError("blyat");
         }

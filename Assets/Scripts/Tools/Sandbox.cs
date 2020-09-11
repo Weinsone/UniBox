@@ -20,6 +20,11 @@ public class Sandbox : MonoBehaviour
         );
         test.AddComponent("button1", ComponentType.button);
         Button button1 = test.GetComponent<Button>("button1");
+        button1.onClick.AddListener(() => Kek("кек"));
+    }
+
+    void Kek(string someText) {
+        Debug.Log("тхе батон хас бен клицкед анд споке " + someText);
     }
 
     void Update() {

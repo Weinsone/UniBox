@@ -344,7 +344,7 @@ PrefabInstance:
     - target: {fileID: 2075560265543423145, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_Name
-      value: Canvas
+      value: TV canvas
       objectReference: {fileID: 0}
     - target: {fileID: 2151912433674017088, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -379,7 +379,7 @@ PrefabInstance:
     - target: {fileID: 3316001994773901975, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0000038146973
+      value: 0.00006497232
       objectReference: {fileID: 0}
     - target: {fileID: 4914007041585440197, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizeX: 200
   sizeY: 170
-  canvas: {fileID: 106636687}
+  canvas: {fileID: 2063978434}
   test: {fileID: 0}
 --- !u!114 &427065842
 MonoBehaviour:
@@ -1487,7 +1487,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2016310064}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.024165627, y: 0.71594787, z: 0.5638657}
+  m_LocalPosition: {x: 0.024165627, y: 1.139, z: -1.402}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2063978435}

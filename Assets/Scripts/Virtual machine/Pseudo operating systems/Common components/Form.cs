@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public enum ComponentType
 {
-    button,
-    edit,
-    scrollBox,
-    audio,
-    video,
-    browser
+    button, // +
+    edit, // -
+    scrollBox, // -
+    audio, // -
+    video, // -
+    browser // -
 }
 
 public class Form : MonoBehaviour
@@ -44,7 +44,8 @@ public class Form : MonoBehaviour
         
         form.computerScreen = target;
 
-        form.transform.SetParent(form.computerScreen.transform);
+        // form.transform.SetParent(form.computerScreen.transform);
+        form.Show(form.transform.gameObject, form.computerScreen.transform.gameObject, 0);
         form.formRect = form.GetComponent<RectTransform>();
 
         form.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
@@ -58,7 +59,14 @@ public class Form : MonoBehaviour
         if (isFormMoving) {
             isFormMoving = false;
         } else {
-            Vector3 offset = formRect.position - Input.mousePosition;
+            Vector3 offset;
+            if (computerScreen.renderMode == RenderMode.WorldSpace) {
+                offset = formRect.position - Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
+                Debug.Log("World space offset is " + offset);
+                Debug.Log("aaaa: " + Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point);
+            } else {
+                offset = formRect.position - Input.mousePosition;
+            }
 
             isFormMoving = true;
             StartCoroutine("FormMover", offset);
@@ -67,8 +75,14 @@ public class Form : MonoBehaviour
 
     private IEnumerator FormMover(Vector3 offset) {
         while(isFormMoving) {
-            // SetFormPosition(Input.mousePosition.x + offset.x, Input.mousePosition.y + offset.y); // TODO: брать курсор из InputHandler
-            formRect.position = Input.mousePosition + offset;
+            // SetFormPosition(Input.mousePosition.x, Input.mousePosition.y); // TODO: брать курсор из InputHandler
+            if (computerScreen.renderMode == RenderMode.WorldSpace) {
+                formRect.position = Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset;
+                Debug.Log("Fffform: " + formRect.anchoredPosition + "; Mouse: " + Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point);
+            } else {
+                formRect.position = Input.mousePosition + offset;
+                Debug.Log("Form: " + formRect.anchoredPosition + "; Mouse: " + Input.mousePosition);
+            }
             yield return null;
         }
     }
@@ -86,20 +100,21 @@ public class Form : MonoBehaviour
         formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0 + formRect.sizeDelta.y, sizeY);
     }
 
-    public void Show() { // Устарело
+    public void Show(GameObject component, GameObject parent, int childNumber) {
         Vector3 oldScale = computerScreen.transform.localScale;
         computerScreen.transform.localScale = new Vector3(1, 1, 1);
 
-        transform.position = computerScreen.transform.position;
-        transform.rotation = computerScreen.transform.rotation;
-        transform.SetParent(computerScreen.transform);
+        component.transform.position = computerScreen.transform.position;
+        component.transform.rotation = computerScreen.transform.rotation;
+        component.transform.SetParent(parent.transform.GetChild(childNumber));
 
         computerScreen.transform.localScale = oldScale;
     }
 
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
         GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
-        component.transform.SetParent(transform.GetChild(1));
+        // component.transform.SetParent(transform.GetChild(1));
+        Show(component, transform.gameObject, 1);
 
         RectTransform componentRect = component.GetComponent<RectTransform>();
         componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
