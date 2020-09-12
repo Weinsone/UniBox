@@ -11,43 +11,29 @@ public class Kek : MonoBehaviour
     private Form form;
     public Canvas canvas;
     string errors;
+    private static int counter;
 
     void Start() {
-        // form = Form.Initialize(
-        //     target: canvas,
-        //     name: "Crap IDE",
-        //     positionX: 400,
-        //     positionY: 200,
-        //     sizeX: 450,
-        //     sizeY: 300
-        // );
-        // form.AddComponent("CodeField", ComponentType.inputField);
-        // form.AddComponent("ErrorList", ComponentType.text);
-        // form.AddComponent("CompileButton", ComponentType.button);
+        
+    }
 
-        // form.SetComponentSize("CodeField", 440, 250);
-        // form.SetComponentSize("ErrorList", 275, 30);
-        // // test.SetComponentSize("CompileButton", 160, 30); // default value
+    public class Test1: IPlugin
+    {
+        public string Name { get; private set; }
+        public string Description { get; private set; }
 
-        // form.SetComponentPosition("CodeField", 5, 5);
-        // form.SetComponentPosition("ErrorList", 5, 264);
-        // form.SetComponentPosition("CompileButton", 285, 264);
-
-        // GameObject codeField = form.GetFormComponent("CodeField");
-        // InputField codeFieldProperties = codeField.GetComponent<InputField>();
-        // Text errorList = form.GetComponentProperties<Text>("ErrorList");
-        // Button compileButton = form.GetComponentProperties<Button>("CompileButton");
-
-        // codeField.transform.GetChild(0).GetComponent<Text>().text = "Enter your code";
-        // codeFieldProperties.lineType = InputField.LineType.MultiLineNewline;
-        // errorList.text = "No problems have been detected";
-        // compileButton.onClick.AddListener(() => PluginEngine.Compile(codeField.transform.GetChild(2).GetComponent<Text>().text, "IdeTest", true));
+        public void Main() {
+            Name = "Test 1";
+            Description = "Это первыый плагин";
+            Debug.Log(Name + ". " + Description);
+        }
     }
 
     void Haha(string говнокод) {
         string тутМогутбытьОшибки;
         if (PluginEngine.Compile(говнокод, "IDE Test", true, out тутМогутбытьОшибки)) {
             Debug.Log("Красава");
+            GameLevel.LocalPlayer.usingComputer.UpdateProgramList();
         } else {
             Debug.LogError(тутМогутбытьОшибки);
         }
@@ -56,7 +42,6 @@ public class Kek : MonoBehaviour
     void Update() {
         if (Input.GetKeyUp(KeyCode.L)) {
             form = Form.Initialize(
-                target: canvas,
                 name: "Crap IDE",
                 positionX: 400,
                 positionY: 200,
@@ -83,7 +68,33 @@ public class Kek : MonoBehaviour
             codeField.transform.GetChild(0).GetComponent<Text>().text = "Enter your code";
             codeFieldProperties.lineType = InputField.LineType.MultiLineNewline;
             errorList.text = "No problems have been detected";
-            compileButton.onClick.AddListener(() => Haha(codeField.transform.GetChild(2).GetComponent<Text>().text));
+            compileButton.onClick.AddListener(() => Haha(codeField.transform.GetChild(2).GetComponent<Text>().text));   
+        }
+        if (Input.GetKeyUp(KeyCode.R)) {
+            string errorList;
+            string code = @"
+                using UnityEngine;
+
+                public class Test" + counter.ToString() + @": IProgram
+                {
+                    public string Name { get; private set; } = ""Test " + counter.ToString() + @""";
+                    public string Description { get; private set; } = ""Это программа по номеру " + counter.ToString() + @""";
+                    public Form Form { get; set; }
+
+                    public void Main() {
+                        Debug.Log(Name + "". "" + Description);
+                    }
+                }
+            ";
+            if (PluginEngine.Compile(code, $"Program {counter.ToString()}", true, out errorList)) {
+                Debug.Log("Плагин " + counter + " успешно скомпилирован");
+                counter++;
+            } else {
+                Debug.LogError(errorList);
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.F)) {
+            GameLevel.LocalPlayer.usingComputer.installedPrograms[0].Main();
         }
 
         // if (Input.GetKeyUp(KeyCode.F)) {

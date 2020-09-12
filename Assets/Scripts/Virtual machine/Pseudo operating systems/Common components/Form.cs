@@ -41,12 +41,12 @@ public class Form : MonoBehaviour
     }
 
     // Крутой костыль. И все из-за того что MonoBehaviour почему-то нельзя создавать через конструктор ._.
-    public static Form Initialize(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+    public static Form Initialize(string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
         Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
         
         form.computerScreen = GameLevel.LocalPlayer.usingComputer.computerCanvas;
 
-        form.AdaptiveAndShow(form.transform.gameObject, form.computerScreen.transform.gameObject, 0);
+        AdaptiveAndShow(form.computerScreen, form.transform.gameObject.transform, form.computerScreen.transform, 0);
         form.formRect = form.GetComponent<RectTransform>();
 
         form.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
@@ -97,13 +97,13 @@ public class Form : MonoBehaviour
         formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0 + formRect.sizeDelta.y, sizeY);
     }
 
-    public void AdaptiveAndShow(GameObject component, GameObject parent, int childNumber) {
+    public static void AdaptiveAndShow(Canvas computerScreen, Transform component, Transform parent, int childNumber) {
         Vector3 oldScale = computerScreen.transform.localScale;
         computerScreen.transform.localScale = new Vector3(1, 1, 1);
 
-        component.transform.position = computerScreen.transform.position;
-        component.transform.rotation = computerScreen.transform.rotation;
-        component.transform.SetParent(parent.transform.GetChild(childNumber));
+        component.position = computerScreen.transform.position;
+        component.rotation = computerScreen.transform.rotation;
+        component.SetParent(parent.GetChild(childNumber));
 
         computerScreen.transform.localScale = oldScale;
     }
@@ -120,7 +120,7 @@ public class Form : MonoBehaviour
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
         GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
         // component.transform.SetParent(transform.GetChild(1));
-        AdaptiveAndShow(component, transform.gameObject, 1);
+        AdaptiveAndShow(computerScreen, component.transform, transform, 1);
 
         RectTransform componentRect = component.GetComponent<RectTransform>();
         componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);

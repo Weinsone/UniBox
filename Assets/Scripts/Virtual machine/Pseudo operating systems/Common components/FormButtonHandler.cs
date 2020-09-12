@@ -17,16 +17,7 @@ public class FormButtonHandler : MonoBehaviour // TODO: все прямые вы
         // TODO: Вывод ошибки на форму
     }
 
-    public void RunProgram(Canvas target) {
-        // Canvas target = this.transform.parent.parent.parent.parent.parent.parent.parent.gameObject.GetComponent<Canvas>();
-        string programName = this.transform.GetChild(0).gameObject.GetComponent<Text>().text;
-
-        IProgram virtualProgram = PluginEngine.GetLibrary<IProgram>(programName);
-        if (virtualProgram != null) {
-            virtualProgram.Form.computerScreen = target;
-            // virtualProgram.Form.Show();
-        } else {
-            Debug.LogError("blyat");
-        }
+    public void RunProgram(Text programName) {
+        GameLevel.LocalPlayer.usingComputer.RunProgram(programName.text);
     }
 }

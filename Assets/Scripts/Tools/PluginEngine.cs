@@ -29,7 +29,7 @@ public static class PluginEngine
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
     
-    public static List<IPlugin> Plugins { get; private set; } = new List<IPlugin>();
+    public static List<IPlugin> PluginsOrPrograms { get; private set; } = new List<IPlugin>();
     // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
     public static bool Compile(string code, string assemblyName, bool isProgramCompilation, out string errorMessage) {
@@ -86,9 +86,9 @@ public static class PluginEngine
     }
 
     public static T GetLibrary<T>(string name) where T: IPlugin {
-        foreach (var plugin in Plugins) {
-            if (plugin.Name == name) {
-                return (T)plugin;
+        foreach (var library in PluginsOrPrograms) {
+            if (library.Name == name) {
+                return (T)library;
             }
         }
         return default(T);
@@ -96,9 +96,8 @@ public static class PluginEngine
 
     public static void RefreshLibraries<T>() where T: IPlugin {
         bool isPlugin = typeof(T) == typeof(IPlugin);
-        string libraryFolder = isPlugin ? programFolderPath : pluginFolderPath;
-        
-        Plugins.Clear();
+        string libraryFolder = isPlugin ? pluginFolderPath : programFolderPath;
+        PluginsOrPrograms.Clear();
 
         DirectoryInfo libraryDirectory = new DirectoryInfo(libraryFolder);
         if (!libraryDirectory.Exists) {
@@ -108,14 +107,15 @@ public static class PluginEngine
 
         string[] files = Directory.GetFiles(libraryFolder, "*.dll");
         foreach (var file in files) {
-            Assembly assembly = Assembly.LoadFrom(file);
+            Assembly assembly = Assembly.Load(File.ReadAllBytes(file));
+            // Assembly assembly = Assembly.LoadFrom(file);
             IEnumerable<Type> types = assembly.GetTypes()
                 .Where(t => t.GetInterfaces()
                 .Where(i => i.FullName == typeof(IPlugin).FullName).Any());
 
             foreach (var type in types) {
                 IPlugin plugin = isPlugin ? plugin = assembly.CreateInstance(type.FullName) as IPlugin : plugin = assembly.CreateInstance(type.FullName) as IProgram;
-                Plugins.Add(plugin);
+                PluginsOrPrograms.Add(plugin);
             }
         }
     }
