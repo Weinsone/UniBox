@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 /*
     Ядерный полигон испытаний
 */
-public class КладезьГовнокода : MonoBehaviour
+public class Kek : MonoBehaviour
 {
     private Form form;
     public Canvas canvas;
@@ -44,7 +44,7 @@ public class КладезьГовнокода : MonoBehaviour
         // compileButton.onClick.AddListener(() => PluginEngine.Compile(codeField.transform.GetChild(2).GetComponent<Text>().text, "IdeTest", true));
     }
 
-    void Пук(string говнокод) {
+    void Haha(string говнокод) {
         string тутМогутбытьОшибки;
         if (PluginEngine.Compile(говнокод, "IDE Test", true, out тутМогутбытьОшибки)) {
             Debug.Log("Красава");
@@ -83,7 +83,7 @@ public class КладезьГовнокода : MonoBehaviour
             codeField.transform.GetChild(0).GetComponent<Text>().text = "Enter your code";
             codeFieldProperties.lineType = InputField.LineType.MultiLineNewline;
             errorList.text = "No problems have been detected";
-            compileButton.onClick.AddListener(() => Пук(codeField.transform.GetChild(2).GetComponent<Text>().text));
+            compileButton.onClick.AddListener(() => Haha(codeField.transform.GetChild(2).GetComponent<Text>().text));
         }
 
         // if (Input.GetKeyUp(KeyCode.F)) {
