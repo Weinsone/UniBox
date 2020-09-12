@@ -32,7 +32,8 @@ public static class PluginEngine
     public static List<IPlugin> Plugins { get; private set; } = new List<IPlugin>();
     // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
-    public static bool Compile(string code, string assemblyName, bool isProgramCompilation) {
+    public static bool Compile(string code, string assemblyName, bool isProgramCompilation, out string errorMessage) {
+        errorMessage = string.Empty;
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
         CSharpCompilation compilation = CSharpCompilation.Create(
@@ -63,14 +64,12 @@ public static class PluginEngine
             EmitResult emitResult = compilation.Emit(Path.Combine(isProgramCompilation ? programFolderPath : pluginFolderPath, $"{assemblyName}.dll"));
 
             if (!emitResult.Success) {
-                string errorMessage = string.Empty;
-
                 IEnumerable<Diagnostic> failures = emitResult.Diagnostics
                     .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
                 foreach (var diagnostic in failures.OrderBy(o => o.Location.GetLineSpan().StartLinePosition.Line))
                 {
-                    errorMessage += $"({diagnostic.Location.GetLineSpan().StartLinePosition.Line}) {diagnostic.Id}: {diagnostic.GetMessage()}\n";
+                    errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
                 }
 
                 Debug.LogError(errorMessage);
@@ -81,6 +80,7 @@ public static class PluginEngine
             }
         } catch (Exception e) {
             Debug.LogError(e.Message);
+            errorMessage = e.Message;
             return false;
         }
     }

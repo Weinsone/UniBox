@@ -12,7 +12,8 @@ public class FormButtonHandler : MonoBehaviour // TODO: все прямые вы
     }
 
     public void CompileProgram(/*VirtualMachine computer*/ Text code) {
-        PluginEngine.Compile(code.text, "IdeTest", true);
+        string загрушка;
+        PluginEngine.Compile(code.text, "IdeTest", true, out загрушка);
         // TODO: Вывод ошибки на форму
     }
 

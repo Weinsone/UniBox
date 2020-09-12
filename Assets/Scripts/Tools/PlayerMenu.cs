@@ -21,7 +21,6 @@ public static class PlayerMenu
     public static void ShowQuickMenu() {
         if (InputHandler.IsLeftMouseKeyPressed) {
             DetectUI();
-            Debug.Log("Eue!");
         }
     }
 

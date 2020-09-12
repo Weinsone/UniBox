@@ -214,7 +214,7 @@ PrefabInstance:
     - target: {fileID: 20259436343976447, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 355775981486460267, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -369,7 +369,7 @@ PrefabInstance:
     - target: {fileID: 2075560265543423145, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 2151912433674017088, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -409,7 +409,7 @@ PrefabInstance:
     - target: {fileID: 3316001994773901975, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00005232768
+      value: 0.032741535
       objectReference: {fileID: 0}
     - target: {fileID: 3761729601695926059, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -475,7 +475,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 36909274}
     - target: {fileID: 5456890476404982483, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -634,7 +634,12 @@ PrefabInstance:
     - target: {fileID: 8132689270957936260, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132689270957936260, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
+        type: 3}
+      propertyPath: m_IgnoreReversedGraphics
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8426856592406053527, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
         type: 3}
@@ -1364,6 +1369,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339001288}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1874117378 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2075560265543423145, guid: d51e168f7519a694bbd8ffc3d9bf7ce5,
+    type: 3}
+  m_PrefabInstance: {fileID: 69303212}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1874117381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874117378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c1d53252f74e784a9e4aa01e1f45f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computerCanvas: {fileID: 0}
 --- !u!1 &2016310064
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,7 +1397,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2016310065}
-  - component: {fileID: 2016310066}
   m_Layer: 0
   m_Name: Smart TV
   m_TagString: Virtual computer
@@ -1400,19 +1423,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2016310066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016310064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c1d53252f74e784a9e4aa01e1f45f41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  computerCanvas: {fileID: 0}
 --- !u!1 &2036640809
 GameObject:
   m_ObjectHideFlags: 0
