@@ -33,6 +33,21 @@ public static class InputHandler
         }
     }
     // Для мышки нужно тоже саме сделать, как в IsMovementKeyPressed
+    public static Vector3 MousePosition {
+        get {
+            return Input.mousePosition;
+        }
+    }
+    public static bool IsLeftMouseKeyPressed {
+        get {
+            return Input.GetKey(KeyCode.Mouse0);
+        }
+    }
+    public static bool IsRightMouseKeyPressed {
+        get {
+            return Input.GetKey(KeyCode.Mouse1);
+        }
+    }
     public static float HorizontalMouseInput {
         get {
             return Input.GetAxis("Mouse X") * 5 /* * sensitivity */;

@@ -22,7 +22,7 @@ public class Form : MonoBehaviour
     private RectTransform formRect;
     private Dictionary<string, GameObject> components = new Dictionary<string, GameObject>();
 
-    public Canvas computerScreen = GameLevel.LocalPlayer.usingComputer.screenCanvas;
+    public Canvas computerScreen;
 
     // public Form(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
     //     computerScreen = target;
@@ -44,10 +44,9 @@ public class Form : MonoBehaviour
     public static Form Initialize(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
         Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
         
-        // form.computerScreen = target;
+        form.computerScreen = GameLevel.LocalPlayer.usingComputer.computerCanvas;
 
-        // form.transform.SetParent(form.computerScreen.transform);
-        form.Show(form.transform.gameObject, form.computerScreen.transform.gameObject, 0);
+        form.AdaptiveAndShow(form.transform.gameObject, form.computerScreen.transform.gameObject, 0);
         form.formRect = form.GetComponent<RectTransform>();
 
         form.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
@@ -63,7 +62,7 @@ public class Form : MonoBehaviour
         } else {
             Vector3 offset;
             if (computerScreen.renderMode == RenderMode.WorldSpace) {
-                offset = formRect.position - Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
+                offset = formRect.position - Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
             } else {
                 offset = formRect.position - Input.mousePosition;
             }
@@ -77,7 +76,7 @@ public class Form : MonoBehaviour
         while (isFormMoving) {
             // SetFormPosition(Input.mousePosition.x, Input.mousePosition.y); // TODO: брать курсор из InputHandler
             if (computerScreen.renderMode == RenderMode.WorldSpace) {
-                formRect.position = Raycast.GetRayHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset;
+                formRect.position = Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset;
             } else {
                 formRect.position = Input.mousePosition + offset;
             }
@@ -98,7 +97,7 @@ public class Form : MonoBehaviour
         formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0 + formRect.sizeDelta.y, sizeY);
     }
 
-    public void Show(GameObject component, GameObject parent, int childNumber) {
+    public void AdaptiveAndShow(GameObject component, GameObject parent, int childNumber) {
         Vector3 oldScale = computerScreen.transform.localScale;
         computerScreen.transform.localScale = new Vector3(1, 1, 1);
 
@@ -121,7 +120,7 @@ public class Form : MonoBehaviour
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
         GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
         // component.transform.SetParent(transform.GetChild(1));
-        Show(component, transform.gameObject, 1);
+        AdaptiveAndShow(component, transform.gameObject, 1);
 
         RectTransform componentRect = component.GetComponent<RectTransform>();
         componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);

@@ -32,6 +32,7 @@ public class GameLevel : MonoBehaviour
     private void LateUpdate() {
         if (InputHandler.IsCursorShowKeyPressed) {
             PlayerMenu.ShowCursor();
+            PlayerMenu.ShowQuickMenu();
         } else {
             PlayerMenu.HideCursor();
             LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
