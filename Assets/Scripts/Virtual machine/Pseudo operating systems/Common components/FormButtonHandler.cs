@@ -11,10 +11,9 @@ public class FormButtonHandler : MonoBehaviour // TODO: все прямые вы
         startMenu.SetActive(!startMenu.activeSelf);
     }
 
-    public void CompileProgram(/*VirtualMachine computer*/ Text code) {
-        string загрушка;
-        PluginEngine.Compile(code.text, "IdeTest", true, out загрушка);
-        // TODO: Вывод ошибки на форму
+    public void CompileProgram(/*VirtualMachine computer*/ Text code, Text errorList, out string error) {
+        PluginEngine.Compile(code.text, "IdeTest", true, out error);
+        errorList.text = error;
     }
 
     public void RunProgram(Text programName) {

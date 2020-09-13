@@ -44,8 +44,6 @@ public static class Raycast
 
         if (results.Count > 0) {
              return results[0].gameObject;
-        } else {
-            Debug.Log("UI не найден");
         }
         return null;
     }

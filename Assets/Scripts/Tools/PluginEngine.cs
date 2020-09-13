@@ -47,7 +47,9 @@ public static class PluginEngine
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(UnityEngine.UI.Button).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(PluginEngine).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(FormButtonHandler).Assembly.Location)
             },
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         
@@ -67,19 +69,18 @@ public static class PluginEngine
                 IEnumerable<Diagnostic> failures = emitResult.Diagnostics
                     .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
-                foreach (var diagnostic in failures.OrderBy(o => o.Location.GetLineSpan().StartLinePosition.Line))
-                {
+                foreach (var diagnostic in failures.OrderBy(o => o.Location.GetLineSpan().StartLinePosition.Line)) {
                     errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
                 }
 
-                Debug.LogError(errorMessage);
+                Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
                 return false;
             } else {
-                Debug.Log("Success");
+                Debug.Log("<color=Red>Plugin engine: Success</color>");
                 return true;
             }
         } catch (Exception e) {
-            Debug.LogError(e.Message);
+            Debug.LogError("<color=Red>Plugin engine:" + e.Message + "</color>");
             errorMessage = e.Message;
             return false;
         }
@@ -95,7 +96,7 @@ public static class PluginEngine
     }
 
     public static void RefreshLibraries<T>() where T: IPlugin {
-        bool isPlugin = typeof(T) == typeof(IPlugin);
+        bool isPlugin = typeof(T) == typeof(IPlugin); // false == IProgram
         string libraryFolder = isPlugin ? pluginFolderPath : programFolderPath;
         PluginsOrPrograms.Clear();
 

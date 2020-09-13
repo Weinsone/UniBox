@@ -36,7 +36,6 @@ public class VirtualMachine : MonoBehaviour
     private void UpdateStartMenu(string programName) {
         // Transform startMenuContent = transform.Find("Computer screen");
         Transform startMenuContent = transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0);
-        Debug.Log(startMenuContent.name);
         GameObject startMenuItem = Instantiate((GameObject)Resources.Load("Virtual machine/Start Menu Item"));
         startMenuItem.transform.GetChild(0).GetComponent<Text>().text = programName;
         Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuContent, 0);

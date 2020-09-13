@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     Пѡлагаетсѧ вѡ использованїе всѣмъ тварѧмъ Божїимъ ѿ игрокове дѡ ботовъ.
-    Только православная церковь признаёт игроков (людей) равными ботам (андроидам). Коннор был бы доволен...
-    Поясняю странный коммент Ви выше: этот класс будет общим для игрока и AI ботов.
+    Только православная церковь признаёт игроков (людей) равными ботам (андроидам).
 */
 public class Controller : MonoBehaviour
 {
@@ -19,7 +18,8 @@ public class Controller : MonoBehaviour
     } 
 
     private void Update() {
-        Falling();
+        Fall();
+
         IsGrounded = charController.isGrounded;
     }
 
@@ -27,7 +27,7 @@ public class Controller : MonoBehaviour
         charController.Move(movement * Time.deltaTime);
     }
 
-    private void Falling() {
+    private void Fall() {
         if (verticalSpeed > terminaVelocity) {
             verticalSpeed += gravity;
         }
