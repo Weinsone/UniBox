@@ -9,7 +9,6 @@ public abstract class ManagedEntity
 
     public GameObject EntityModel { get; private set; }
     public Controller Controller { get; private set; }
-    public AnimationManager Animator { get; private set; }
     
     public float ViewAngle { get; set; }
     public float ViewDistance { get; set; }
@@ -22,7 +21,6 @@ public abstract class ManagedEntity
     public ManagedEntity(string controllerName) {
         EntityModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
         Controller = EntityModel.GetComponent<Controller>();
-        Animator = new AnimationManager(Controller, EntityModel.GetComponent<Animator>());
     }
 
     public void SetController(string controllerName) {
@@ -30,14 +28,15 @@ public abstract class ManagedEntity
 
         MonoBehaviour.Destroy(EntityModel);
         EntityModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
-        Controller = EntityModel.GetComponent<Controller>();
 
         EntityModel.transform.position = previousModelTransform.position;
         EntityModel.transform.rotation = previousModelTransform.rotation;
         EntityModel.transform.localScale = previousModelTransform.localScale;
+
+        Controller = EntityModel.GetComponent<Controller>();
     }
 
-    public void GoTo(Vector3 position, bool immediately) {
+    public void GoTo(Vector3 position, bool immediately = true) {
         if (immediately) {
             EntityModel.transform.position = position;
         } else {

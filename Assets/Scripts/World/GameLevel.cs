@@ -13,10 +13,13 @@ public class GameLevel : MonoBehaviour
     private void Start() {
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
+        
         if (Server.isHost) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
             Server.Targets.Add(LocalPlayer.EntityModel.transform);
         }
+
+        // PluginEngine.onProgramCompiled = new PluginEngine.CompiledPluginStateHandler(LocalPlayer.usingComputer.AddProgram);
     }
 
     private void Update() {
@@ -26,7 +29,6 @@ public class GameLevel : MonoBehaviour
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();
         }
-        LocalPlayer.Animator.Animate(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput);
     }
 
     private void LateUpdate() {

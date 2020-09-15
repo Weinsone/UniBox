@@ -25,12 +25,28 @@ public class VirtualMachine : MonoBehaviour
         }
     }
 
+    public void AddProgram(string programName) {
+        foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
+            if (program.Name == programName) {
+                installedPrograms.Add(program);
+            }
+        }
+    }
+
+    public void DeleteProgram(string programName) {
+
+    }
+
     public void UpdateProgramList() {
         PluginEngine.RefreshLibraries<IProgram>();
         foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
             installedPrograms.Add(program);
             UpdateStartMenu(program.Name);
         }
+    }
+
+    public static void GetCompiledProgram(string programName) {
+        GameLevel.LocalPlayer.usingComputer.AddProgram(programName);
     }
 
     private void UpdateStartMenu(string programName) {

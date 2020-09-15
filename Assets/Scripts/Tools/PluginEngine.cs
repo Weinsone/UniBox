@@ -25,6 +25,11 @@ public interface IProgram : IPlugin {  // Для виртуальных комп
 
 public static class PluginEngine
 {
+    public delegate void CompiledPluginStateHandler(string programName);
+    public static CompiledPluginStateHandler onPluginCompiled;
+    public static CompiledPluginStateHandler onProgramCompiled;
+    public static event CompiledPluginStateHandler notify;
+
     // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
@@ -33,8 +38,14 @@ public static class PluginEngine
     // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
     public static bool Compile(string code, string assemblyName, bool isProgramCompilation, out string errorMessage) {
+        string compilationName = string.Empty;
         errorMessage = string.Empty;
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
+
+        if (!CheckTree(syntaxTree, out errorMessage)) {
+            Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
+            return false;
+        }
 
         CSharpCompilation compilation = CSharpCompilation.Create(
             assemblyName,
@@ -77,6 +88,7 @@ public static class PluginEngine
                 return false;
             } else {
                 Debug.Log("<color=Red>Plugin engine: Success</color>");
+                onProgramCompiled(compilationName);
                 return true;
             }
         } catch (Exception e) {
@@ -85,6 +97,34 @@ public static class PluginEngine
             return false;
         }
     }
+
+    public static bool CheckTree(SyntaxTree tree, out string syntaxError) {
+        SyntaxNode root = tree.GetRoot();
+
+        IEnumerable<SyntaxToken> usingNames = root.DescendantNodes()
+            .Where(an => an is UsingDirectiveSyntax)
+            .Cast<IdentifierNameSyntax>()
+            .Select(vd => vd.Identifier);
+        
+        foreach (var usingName in usingNames) {
+            Debug.Log("<color=Red>PluginEngine - Usings:</color> " + usingName.Value);
+        }
+
+        syntaxError = string.Empty;
+        return true;
+    }
+
+    // public static bool CheckTreeFor<T>(SyntaxTree tree, out string syntaxError) where T: IEnumerable<SyntaxToken> {
+    //     SyntaxNode root = tree.GetRoot();
+
+    //     IEnumerable<SyntaxToken> declaredIdentifers = root.DescendantNodes()
+    //         .Where(an => an is T)
+    //         .Cast<T>()
+    //         .Select(vd => vd.Identifier);
+        
+    //     syntaxError = string.Empty;
+    //     return true;
+    // }
 
     public static T GetLibrary<T>(string name) where T: IPlugin {
         foreach (var library in PluginsOrPrograms) {

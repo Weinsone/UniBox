@@ -9,18 +9,21 @@ public class Controller : MonoBehaviour
 {
     private Vector3 movement;
     private CharacterController charController;
+    private AnimationManager animator;
     public float speed, verticalSpeed, gravity, terminaVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
+    private bool isJumping;
     public bool IsGrounded { get; private set; }
     public Vector3 eyeLevel;
 
     private void Start() {
         charController = GetComponent<CharacterController>();
+        animator = new AnimationManager(GetComponent<Animator>(), string.Empty);
     } 
 
     private void Update() {
-        Fall();
+        Fall(); // Если контроллер все время не тянуть вниз, даже когда он на земле, то charController.isGrounded начинает выдавать рандомное значение
 
-        IsGrounded = charController.isGrounded;
+        IsGrounded = charController.isGrounded; // Значение для следующего кадра
     }
 
     private void ApplyMovement() {
@@ -28,8 +31,14 @@ public class Controller : MonoBehaviour
     }
 
     private void Fall() {
-        if (verticalSpeed > terminaVelocity) {
-            verticalSpeed += gravity;
+        if (IsGrounded) {
+            if (verticalSpeed < gravity) { // Сброс verticalSpeed, если он был уменьшен через условие ниже
+                verticalSpeed = gravity;
+            }
+        } else {
+            if (verticalSpeed > terminaVelocity) {
+                verticalSpeed += gravity;
+            }
         }
         movement.y = verticalSpeed;
         ApplyMovement();
@@ -40,16 +49,30 @@ public class Controller : MonoBehaviour
         movement.x = x * speed;
         movement.z = z * speed;
 
+    // <старый кусок>
+        // Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
+        // targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
+        // movement = targetCamera.TransformDirection(movement);
+
+        // // if (tipaIsThirdPersonEnabled) {
+        //     Quaternion dir = Quaternion.LookRotation(movement);
+        //     transform.rotation = Quaternion.Lerp(transform.rotation, dir, rotationSpeed);
+        // // }
+    // </старый кусок>
+
         Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
         targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
         movement = targetCamera.TransformDirection(movement);
 
-        // if (tipaIsThirdPersonEnabled) {
-            Quaternion dir = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Lerp(transform.rotation, dir, rotationSpeed);
-        // }
+        // Quaternion dir = Quaternion.LookRotation(targetCamera);
+        transform.rotation = Quaternion.Lerp(transform.rotation, GameLevel.LocalPlayerCamera.Camera.transform.rotation, rotationSpeed);
 
+        Animate(x, z);
         ApplyMovement();
+    }
+
+    private void Animate(float x, float y) {
+        animator.SetMovementValues(x, y);
     }
 
     public void Look(Vector3 dir) {
