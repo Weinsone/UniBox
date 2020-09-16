@@ -14,7 +14,8 @@ public class AnimationManager
 
     // IK properties
     private float rightWeight, leftWeight;
-    private Quaternion rightFootRotation, leftFootRotation, latestRightFootRoatation, latestLeftFootRotation;
+    private Quaternion rightFootRotation, leftFootRotation; // Каждый кадр стопа персонажа синхронизируется с этим значением
+    private Quaternion latestRightFootRoatation, latestLeftFootRotation; // Вращение стопы, на момент наступления на землю
     private Vector3 latestRightKneeDirection, latestLeftKneeDirection;
     private RaycastHit rightSurface, leftSurface;
 
@@ -67,6 +68,8 @@ public class AnimationManager
             rightFootRotation = controllerRotation;
             latestRightFootRoatation = rightFootRotation;
             latestRightKneeDirection = controllerDirection;
+
+            rightSurface = Raycast.GetHit(new Ray(rightFoot.position, Vector3.down));
         } else {
             rightFootRotation = latestRightFootRoatation;
         }
@@ -74,14 +77,11 @@ public class AnimationManager
             leftFootRotation = controllerRotation;
             latestLeftFootRotation = leftFootRotation;
             latestLeftKneeDirection = controllerDirection;
+            
+            leftSurface = Raycast.GetHit(new Ray(leftFoot.position, Vector3.down));
         } else {
             leftFootRotation = latestLeftFootRotation;
         }
-
-        rightSurface = Raycast.GetHit(new Ray(rightFoot.position, Vector3.down));
-        leftSurface = Raycast.GetHit(new Ray(leftFoot.position, Vector3.down));
-
-        Debug.DrawLine(rightSurface.point, rightSurface.point + rightSurface.normal);
 
         SetIKPosition(controllerFootOffset);
         SetIKHintPosition();
@@ -95,6 +95,7 @@ public class AnimationManager
 
         animator.SetIKPosition(AvatarIKGoal.RightFoot, rightSurface.point + controllerFootOffset);
         animator.SetIKPosition(AvatarIKGoal.LeftFoot, leftSurface.point + controllerFootOffset);
+
         animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, rightSurface.normal) * rightFootRotation);
         animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, leftSurface.normal) * leftFootRotation);
     }
