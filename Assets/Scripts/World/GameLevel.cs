@@ -41,4 +41,10 @@ public class GameLevel : MonoBehaviour
         }
         LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);
     }
+
+    // private IEnumerable BotChecker() {
+    //     foreach (var bot in Server.Bots) {
+    //         bot.Behavior.Checkup();
+    //     }
+    // }
 }

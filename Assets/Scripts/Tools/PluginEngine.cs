@@ -28,7 +28,7 @@ public static class PluginEngine
     public delegate void CompiledPluginStateHandler(string programName);
     public static CompiledPluginStateHandler onPluginCompiled;
     public static CompiledPluginStateHandler onProgramCompiled;
-    public static event CompiledPluginStateHandler notify;
+    // public static event CompiledPluginStateHandler notify;
 
     // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");

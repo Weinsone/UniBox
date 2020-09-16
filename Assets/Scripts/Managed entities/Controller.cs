@@ -8,16 +8,19 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     private Vector3 movement;
+
     private CharacterController charController;
-    private AnimationManager animator;
+    private AnimationManager animationManager;
+
     public float speed, verticalSpeed, gravity, terminaVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
     private bool isJumping;
     public bool IsGrounded { get; private set; }
-    public Vector3 eyeLevel;
+
+    public Vector3 eyeLevel, footOffset;
 
     private void Start() {
         charController = GetComponent<CharacterController>();
-        animator = new AnimationManager(GetComponent<Animator>(), string.Empty);
+        animationManager = new AnimationManager(GetComponent<Animator>(), string.Empty);
     } 
 
     private void Update() {
@@ -34,20 +37,22 @@ public class Controller : MonoBehaviour
         if (IsGrounded) {
             if (verticalSpeed < gravity) { // Сброс verticalSpeed, если он был уменьшен через условие ниже
                 verticalSpeed = gravity;
+                animationManager.SetBoolValue("Falling", false);
             }
         } else {
             if (verticalSpeed > terminaVelocity) {
                 verticalSpeed += gravity;
+                animationManager.SetBoolValue("Falling", true);
             }
         }
         movement.y = verticalSpeed;
         ApplyMovement();
     }
 
-    public void Move(float x, float z) {
+    public void Move(float keyX, float keyY) {
         movement = Vector3.zero;
-        movement.x = x * speed;
-        movement.z = z * speed;
+        movement.x = keyX * speed;
+        movement.z = keyY * speed;
 
     // <старый кусок>
         // Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
@@ -67,12 +72,16 @@ public class Controller : MonoBehaviour
         // Quaternion dir = Quaternion.LookRotation(targetCamera);
         transform.rotation = Quaternion.Lerp(transform.rotation, GameLevel.LocalPlayerCamera.Camera.transform.rotation, rotationSpeed);
 
-        Animate(x, z);
+        Animate(keyX, keyY);
         ApplyMovement();
     }
 
     private void Animate(float x, float y) {
-        animator.SetMovementValues(x, y);
+        animationManager.SetMovementValues(x, y);
+    }
+
+    private void OnAnimatorIK() {
+        animationManager.AnimateIK(transform.forward, transform.rotation, footOffset);
     }
 
     public void Look(Vector3 dir) {
