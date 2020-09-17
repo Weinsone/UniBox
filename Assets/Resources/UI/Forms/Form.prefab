@@ -563,7 +563,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2355423655473546728}
+      - m_Target: {fileID: 8325100068811907973}
         m_MethodName: OnFormHeadClick
         m_Mode: 1
         m_Arguments:
@@ -821,7 +821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6519017223484426771}
-  - component: {fileID: 2355423655473546728}
+  - component: {fileID: 8325100068811907973}
   m_Layer: 5
   m_Name: Form
   m_TagString: Untagged
@@ -850,7 +850,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2355423655473546728
+--- !u!114 &8325100068811907973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -862,7 +862,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b94e4ee3c166e34389a023f6a02da4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computerScreen: {fileID: 0}
+  targetCanvas: {fileID: 0}
+  formName: 
 --- !u!1 &8533484337657217451
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,12 +8,14 @@ using UnityEngine;
 public class GameLevel : MonoBehaviour
 {
     public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
-    public static CameraController LocalPlayerCamera { get; private set; } // прекол, но судя по коду - камера отдельная сущность, которая к игроку не имеет отношения. хз, хорошо это или плохо. если камера будет отлетать от модели игрока, то все норм, даже неплохо
+    public static CameraController LocalPlayerCamera { get; private set; }
 
     private void Start() {
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
-        
+
+        PlayerMenu.CreatePlayerUI(GameObject.Find("MainCanvas"));
+
         if (Server.isHost) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
             Server.Targets.Add(LocalPlayer.EntityModel.transform);
@@ -32,11 +34,17 @@ public class GameLevel : MonoBehaviour
     }
 
     private void LateUpdate() {
-        if (InputHandler.IsCursorShowKeyPressed) {
+        if (InputHandler.IsGameplayMenuKeyPressed) {
             PlayerMenu.ShowCursor();
-            PlayerMenu.ShowQuickMenu();
+            if (InputHandler.GameplayMenuState) {
+                PlayerMenu.ShowGameplayMenu();
+            } else if (InputHandler.QuckMenuState) {
+                PlayerMenu.ShowQuickMenu();
+            }
         } else {
             PlayerMenu.HideCursor();
+            PlayerMenu.HideGameplayMenu();
+            PlayerMenu.HideQuickMenu();
             LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
         }
         LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);

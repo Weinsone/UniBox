@@ -27,11 +27,21 @@ public static class InputHandler
             return Input.GetKey(KeyCode.Space); // можно попробовать GetButtonDown()
         }
     }
-    public static bool IsCursorShowKeyPressed {
+
+    public static bool GameplayMenuState { get; private set; }
+    public static bool QuckMenuState { get; private set; }
+    public static bool IsGameplayMenuKeyPressed {
         get {
-            return Input.GetKey(KeyCode.C);
+            GameplayMenuState = Input.GetKey(KeyCode.Q);
+            QuckMenuState = Input.GetKey(KeyCode.C);
+            if (GameplayMenuState || QuckMenuState) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
+
     // Для мышки нужно тоже саме сделать, как в IsMovementKeyPressed
     public static Vector3 MousePosition {
         get {

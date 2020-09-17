@@ -54,7 +54,7 @@ public class VirtualMachine : MonoBehaviour
         Transform startMenuContent = transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0);
         GameObject startMenuItem = Instantiate((GameObject)Resources.Load("Virtual machine/Start Menu Item"));
         startMenuItem.transform.GetChild(0).GetComponent<Text>().text = programName;
-        Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuContent, 0);
+        Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuContent, 1);
         // startMenuItem.transform.SetParent(startMenuContent);
     }
 

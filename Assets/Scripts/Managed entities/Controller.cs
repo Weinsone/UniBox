@@ -10,7 +10,7 @@ public class Controller : MonoBehaviour
     private Vector3 movement;
 
     private CharacterController charController;
-    private AnimationManager animationManager;
+    public AnimationManager animationManager;
 
     public float speed, verticalSpeed, gravity, terminaVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
     private bool isJumping;

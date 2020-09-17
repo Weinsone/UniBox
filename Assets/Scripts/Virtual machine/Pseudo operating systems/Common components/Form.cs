@@ -10,7 +10,7 @@ public enum ComponentType
     text, // +
     toggle, // +
     inputField, // +
-    scrollBox, // -
+    scrollView, // +
     audio, // -
     video, // -
     browser // -
@@ -22,7 +22,11 @@ public class Form : MonoBehaviour
     private RectTransform formRect;
     private Dictionary<string, GameObject> components = new Dictionary<string, GameObject>();
 
-    public Canvas computerScreen;
+    public Canvas targetCanvas;
+
+    // public string formName;
+    // public float positionX, positionY;
+    // public float sizeX, sizeY;
 
     // public Form(Canvas target, string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
     //     computerScreen = target;
@@ -41,15 +45,19 @@ public class Form : MonoBehaviour
     }
 
     // Крутой костыль. И все из-за того что MonoBehaviour почему-то нельзя создавать через конструктор ._.
-    public static Form Initialize(string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
-        Form form = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Form")).GetComponent<Form>();
+    public static Form Initialize(string formName = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+        Form form = Instantiate((GameObject)Resources.Load("UI/Forms/Form")).GetComponent<Form>();
         
-        form.computerScreen = GameLevel.LocalPlayer.usingComputer.computerCanvas;
-
-        AdaptiveAndShow(form.computerScreen, form.transform.gameObject.transform, form.computerScreen.transform, 0);
+        if (GameLevel.LocalPlayer.isUseComputer) {
+            form.targetCanvas = GameLevel.LocalPlayer.usingComputer.computerCanvas;
+            AdaptiveAndShow(form.targetCanvas, form.transform, form.targetCanvas.transform, 1);
+        } else {
+            form.targetCanvas = PlayerMenu.canvas;
+            AdaptiveAndShow(form.targetCanvas, form.transform, form.targetCanvas.transform, 0);
+        }
         form.formRect = form.GetComponent<RectTransform>();
 
-        form.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
+        form.SetFormName(formName);
         form.SetFormPosition(positionX, positionY);
         form.SetFormSize(sizeX, sizeY);
         
@@ -61,7 +69,7 @@ public class Form : MonoBehaviour
             isFormMoving = false;
         } else {
             Vector3 offset;
-            if (computerScreen.renderMode == RenderMode.WorldSpace) {
+            if (targetCanvas.renderMode == RenderMode.WorldSpace) {
                 offset = formRect.position - Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
             } else {
                 offset = formRect.position - Input.mousePosition;
@@ -74,14 +82,17 @@ public class Form : MonoBehaviour
 
     private IEnumerator FormMover(Vector3 offset) {
         while (isFormMoving) {
-            // SetFormPosition(Input.mousePosition.x, Input.mousePosition.y); // TODO: брать курсор из InputHandler
-            if (computerScreen.renderMode == RenderMode.WorldSpace) {
-                formRect.position = Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset;
+            if (targetCanvas.renderMode == RenderMode.WorldSpace) {
+                formRect.position = Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point + offset; // TODO: брать курсор из InputHandler
             } else {
                 formRect.position = Input.mousePosition + offset;
             }
             yield return null;
         }
+    }
+
+    public void SetFormName(string formName) {
+        transform.GetChild(0).GetChild(0).GetComponent<Text>().text = formName;
     }
 
     public void SetFormPosition(float positionX, float positionY) {
@@ -91,21 +102,21 @@ public class Form : MonoBehaviour
 
     public void SetFormSize(float sizeX, float sizeY) {
         RectTransform formContentRect = transform.GetChild(1).GetComponent<RectTransform>();
-        formRect.sizeDelta = new Vector2(sizeX, formRect.sizeDelta.y);
-        // formRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
+        formRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, formRect.anchoredPosition.x - formRect.sizeDelta.x / 2, sizeX);
+
         formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
         formContentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0 + formRect.sizeDelta.y, sizeY);
     }
 
-    public static void AdaptiveAndShow(Canvas computerScreen, Transform component, Transform parent, int childNumber) {
-        Vector3 oldScale = computerScreen.transform.localScale;
-        computerScreen.transform.localScale = new Vector3(1, 1, 1);
+    public static void AdaptiveAndShow(Canvas targetCanvas, Transform component, Transform parent, int childNumber) {
+        Vector3 oldScale = targetCanvas.transform.localScale;
+        targetCanvas.transform.localScale = new Vector3(1, 1, 1);
 
-        component.position = computerScreen.transform.position;
-        component.rotation = computerScreen.transform.rotation;
-        component.SetParent(parent.GetChild(childNumber));
+        component.position = targetCanvas.transform.position;
+        component.rotation = targetCanvas.transform.rotation;
+        component.SetParent(childNumber == 0 ? parent.transform : parent.GetChild(childNumber - 1)); // В дереве первый элемент считается нулевым
 
-        computerScreen.transform.localScale = oldScale;
+        targetCanvas.transform.localScale = oldScale;
     }
 
     public GameObject GetFormComponent(string componentName) {
@@ -118,15 +129,11 @@ public class Form : MonoBehaviour
     }
 
     public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
-        GameObject component = Instantiate((GameObject)Resources.Load("Virtual machine/Forms/Components/" + componentType.ToString()));
-        // component.transform.SetParent(transform.GetChild(1));
-        AdaptiveAndShow(computerScreen, component.transform, transform, 1);
-
-        RectTransform componentRect = component.GetComponent<RectTransform>();
-        componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
-        componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, positionY, componentRect.rect.height);
-        
+        GameObject component = Instantiate((GameObject)Resources.Load("UI/Forms/Components/" + componentType.ToString()));
+        AdaptiveAndShow(targetCanvas, component.transform, transform, 2);
         components.Add(name, component);
+        SetComponentPosition(component, positionX, positionY);
+        // return component;
     }
 
     public T GetComponentProperties<T>(string componentName) {
@@ -138,27 +145,32 @@ public class Form : MonoBehaviour
         return default(T);
     }
 
+    public void SetComponentPosition(GameObject componentObject, float positionX, float positionY) {
+        RectTransform componentRect = componentObject.GetComponent<RectTransform>();
+        componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
+        componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, positionY, componentRect.rect.height);
+    }
+
     public void SetComponentPosition(string componentName, float positionX, float positionY) {
         foreach (var component in components) {
             if (component.Key == componentName) {
-                RectTransform componentRect = component.Value.GetComponent<RectTransform>();
-                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, positionX, componentRect.rect.width);
-                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, positionY, componentRect.rect.height);
-                break;
+                SetComponentPosition(component.Value, positionX, positionY);
+                return;
             }
         }
+        Debug.LogError("Component pos: " + componentName + " не найден");
     }
 
     public void SetComponentSize(string componentName, float sizeX, float sizeY) {
         foreach (var component in components) {
             if (component.Key == componentName) {
                 RectTransform componentRect = component.Value.GetComponent<RectTransform>();
-                // componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, sizeX);
-                // componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, sizeY);
-                componentRect.sizeDelta = new Vector2(sizeX, sizeY);
-                break;
+                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, componentRect.anchoredPosition.x - componentRect.sizeDelta.x / 2, sizeX);
+                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -componentRect.anchoredPosition.y - componentRect.sizeDelta.y / 2, sizeY);
+                return;
             }
         }
+        Debug.LogError("Component siz: " + componentName + " не найден");
     }
 
     public void OnClose(GameObject form) {
@@ -181,22 +193,4 @@ public class Form : MonoBehaviour
     private IEnumerator SizeAnimation((float toX, float toY) parameters) {
         return null;
     }
-
-    // public class Component
-    // {
-    //     private GameObject perfab;
-
-    //     public string name;
-    //     public FormComponents componentType;
-    //     public float position;
-    //     public float sizeX, sizeY;
-
-    //     public Component() {
-
-    //     }
-
-    //     public static implicit operator Button(Component component) {
-    //         return component.perfab.GetComponent<Button>();
-    //     }
-    // }
 }

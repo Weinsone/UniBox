@@ -1,0 +1,6 @@
+<windows>
+	<window name = "Asset menu", positionX = "50", positionY = "50", sizeX = "10", sizeY = "10">
+		<component type = "InputField" positionX = "50", positionY = "50", sizeX = "10", sizeY = "10">
+		<component type = "Button" positionX = "50", positionY = "50", sizeX = "10", sizeY = "10">
+	</window>
+</windows>

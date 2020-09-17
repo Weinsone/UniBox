@@ -1,6 +1,7 @@
 /*
     Невошедшие:
-    FormComponents - Form.cs
+    FormComponents - Window.cs
+    GameModeList - GameMode.cs
 */
 
 public enum Privileges
