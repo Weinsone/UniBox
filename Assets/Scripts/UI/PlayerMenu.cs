@@ -73,11 +73,13 @@ public static class PlayerMenu
 
         bool leftMouseKeyState = InputHandler.IsLeftMouseKeyPressed;
 
-        ObjectTools.Move(leftMouseKeyState, true);
-
         if (leftMouseKeyState) {
-            DetectUI();
+            if (DetectUI()) {
+                return;
+            }
         }
+
+        ObjectTools.Implement(leftMouseKeyState);
     }
 
     public static void HideQuickMenu() {
@@ -97,11 +99,14 @@ public static class PlayerMenu
         
     }
 
-    private static void DetectUI() {
-        GameObject foundObject = Raycast.GetUIHit(CursorPosition);
+    private static bool DetectUI() {
+        GameObject foundObject = Raycast.GetUIHit(Input.mousePosition);
         if (foundObject != null) {
             GameLevel.LocalPlayer.isUseComputer = true;
             GameLevel.LocalPlayer.usingComputer = foundObject.GetComponentInParent<VirtualMachine>();
+            return true;
+        } else {
+            return false;
         }
     }
 }

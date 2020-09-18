@@ -29,10 +29,8 @@ public static class GameMode
                 for (int i = 0; i < 2; i++) {
                     if (i == 0) {
                         menuForms[i] = Form.Initialize("Props", 175, 18, 850, 500);
-                        menuForms[i].AddComponent("PropList", ComponentType.scrollView);
+                        menuForms[i].AddComponent("PropList", ComponentType.scrollView, 0, 0, 850, 500);
                         GameObject assetListObject = menuForms[i].GetFormComponent("PropList");
-                        menuForms[i].SetComponentPosition("PropList", 0, 0);
-                        menuForms[i].SetComponentSize("PropList", 850, 500);
 
                         GameObject assetListContent = assetListObject.transform.GetChild(0).GetChild(0).gameObject;
                         GridLayoutGroup layout = assetListContent.AddComponent<GridLayoutGroup>();
@@ -43,14 +41,25 @@ public static class GameMode
                         UnityEngine.Object[] gameplayObjects = Resources.LoadAll("Objects");
                         GameObject objectPreviewPerfab = (GameObject)Resources.Load("UI/ObjectPreview");
                         foreach (var gameplayObject in gameplayObjects) {
-                            Texture2D objectPreviewTexture = AssetPreview.GetAssetPreview(gameplayObject);
+                            // Texture2D objectPreviewTexture = AssetPreview.GetAssetPreview(gameplayObject);
 
                             Image objectPreview = MonoBehaviour.Instantiate(objectPreviewPerfab, assetListContent.transform).GetComponent<Image>();
-                            objectPreview.sprite = Sprite.Create(objectPreviewTexture, new Rect(0, 0, objectPreviewTexture.width, objectPreviewTexture.height), objectPreview.rectTransform.pivot);
+                            objectPreview.sprite = Sprite.Create(AssetPreview.GetAssetPreview(gameplayObject), new Rect(0, 0, 128, 128), objectPreview.rectTransform.pivot);
                             objectPreview.GetComponent<Button>().onClick.AddListener(() => ObjectTools.Spawn((GameObject)gameplayObject));
                         }
                     } else {
                         menuForms[i] = Form.Initialize("Tools", 1050, 18, 200, 500);
+                        GameObject buttonObject;
+
+                        menuForms[i].AddComponent("MoverSelector", ComponentType.button, 10, 10, 180, default);
+                        buttonObject = menuForms[i].GetFormComponent("MoverSelector");
+                        buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Move Tool";
+                        buttonObject.GetComponent<Button>().onClick.AddListener(() => ObjectTools.SetTool(ToolList.mover));
+
+                        menuForms[i].AddComponent("VertexSnapSelector", ComponentType.button, 10, 45, 180, default);
+                        buttonObject = menuForms[i].GetFormComponent("VertexSnapSelector");
+                        buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Vertex Snap Tool";
+                        buttonObject.GetComponent<Button>().onClick.AddListener(() => ObjectTools.SetTool(ToolList.vertexSnap));
                     }
                     menuForms[i].gameObject.SetActive(false);
                 }

@@ -47,8 +47,9 @@ public static class Raycast
         EventSystem.current.RaycastAll(pointerData, results);
 
         if (results.Count > 0) {
-             return results[0].gameObject;
+            return results[0].gameObject;
+        } else {
+            return null;
         }
-        return null;
     }
 }

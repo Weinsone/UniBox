@@ -45,7 +45,7 @@ public class Form : MonoBehaviour
     }
 
     // Крутой костыль. И все из-за того что MonoBehaviour почему-то нельзя создавать через конструктор ._.
-    public static Form Initialize(string formName = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
+    public static Form Initialize(string name = "Form", float positionX = 0, float positionY = 0, float sizeX = 200, float sizeY = 170) {
         Form form = Instantiate((GameObject)Resources.Load("UI/Forms/Form")).GetComponent<Form>();
         
         if (GameLevel.LocalPlayer.isUseComputer) {
@@ -57,7 +57,7 @@ public class Form : MonoBehaviour
         }
         form.formRect = form.GetComponent<RectTransform>();
 
-        form.SetFormName(formName);
+        form.SetFormName(name);
         form.SetFormPosition(positionX, positionY);
         form.SetFormSize(sizeX, sizeY);
         
@@ -128,21 +128,32 @@ public class Form : MonoBehaviour
         return default;
     }
 
-    public void AddComponent(string name, ComponentType componentType, float positionX = 0, float positionY = 0) {
+    public void AddComponent(string componentName, ComponentType componentType, float positionX = default, float positionY = default, float sizeX = default, float sixeY = default) {
         GameObject component = Instantiate((GameObject)Resources.Load("UI/Forms/Components/" + componentType.ToString()));
         AdaptiveAndShow(targetCanvas, component.transform, transform, 2);
-        components.Add(name, component);
         SetComponentPosition(component, positionX, positionY);
+        if (sizeX != default || sixeY != default) {
+            SetComponentSize(component, sizeX, sixeY);
+        }
+        components.Add(componentName, component);
         // return component;
     }
 
-    public T GetComponentProperties<T>(string componentName) {
+    // public void SetComponentValue<TValue>(string componentName, TValue value) {
+    //     foreach (var component in components) {
+    //         if (componentName == component.Key) {
+                
+    //         }
+    //     }
+    // }
+
+    public TProperties GetComponentProperties<TProperties>(string componentName) {
         foreach (var component in components) {
             if (componentName == component.Key) {
-                return component.Value.GetComponent<T>();
+                return component.Value.GetComponent<TProperties>();
             }
         }
-        return default(T);
+        return default(TProperties);
     }
 
     public void SetComponentPosition(GameObject componentObject, float positionX, float positionY) {
@@ -161,12 +172,20 @@ public class Form : MonoBehaviour
         Debug.LogError("Component pos: " + componentName + " не найден");
     }
 
+    public void SetComponentSize(GameObject componentObject, float sizeX, float sizeY) {
+        RectTransform componentRect = componentObject.GetComponent<RectTransform>();
+        if (sizeX != default) {
+            componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, componentRect.anchoredPosition.x - componentRect.sizeDelta.x / 2, sizeX);
+        }
+        if (sizeY != default) {
+            componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -componentRect.anchoredPosition.y - componentRect.sizeDelta.y / 2, sizeY);
+        }
+    }
+
     public void SetComponentSize(string componentName, float sizeX, float sizeY) {
         foreach (var component in components) {
             if (component.Key == componentName) {
-                RectTransform componentRect = component.Value.GetComponent<RectTransform>();
-                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, componentRect.anchoredPosition.x - componentRect.sizeDelta.x / 2, sizeX);
-                componentRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -componentRect.anchoredPosition.y - componentRect.sizeDelta.y / 2, sizeY);
+                SetComponentSize(component.Value, sizeX, sizeY);
                 return;
             }
         }

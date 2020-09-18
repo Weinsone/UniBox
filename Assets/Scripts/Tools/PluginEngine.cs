@@ -42,10 +42,10 @@ public static class PluginEngine
         errorMessage = string.Empty;
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
-        if (!CheckTree(syntaxTree, out errorMessage)) {
-            Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
-            return false;
-        }
+        // if (!CheckTree(syntaxTree, out errorMessage)) {
+        //     Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
+        //     return false;
+        // }
 
         CSharpCompilation compilation = CSharpCompilation.Create(
             assemblyName,
@@ -88,7 +88,7 @@ public static class PluginEngine
                 return false;
             } else {
                 Debug.Log("<color=Red>Plugin engine: Success</color>");
-                onProgramCompiled(compilationName);
+                // onProgramCompiled(compilationName);
                 return true;
             }
         } catch (Exception e) {

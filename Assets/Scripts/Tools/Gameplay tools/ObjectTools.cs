@@ -2,10 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ToolList
+{
+    mover, // +
+    vertexSnap, // +
+    fixJoint, // -
+    hingeJount // -
+}
+
 public static class ObjectTools
 {
-    public static float animationSpeed = 20f;
+    public static ToolList SelectedTool { get; private set; } = ToolList.mover;
+
     public static List<GameObject> CreatedObjects { get; private set; } = new List<GameObject>();
+    public static float animationSpeed = 20f;
+
+    // Tools properties
+    private static bool isImplement;
+    private static GameObject movingObject;
+    private static Vector3 offset;
+
+    public static void SetTool(ToolList tool) {
+        SelectedTool = tool;
+    }
+
+    public static void Implement(bool toolState) {
+        switch (SelectedTool) {
+            case ToolList.mover:
+                Mover.Move(toolState);
+                break;
+            case ToolList.vertexSnap:
+                VertexSnap.Snap(toolState);
+                break;
+        }
+    }
 
     public static void Spawn(GameObject gameObject) {
         MonoBehaviour.Instantiate(
@@ -16,20 +46,36 @@ public static class ObjectTools
         CreatedObjects.Add(gameObject);
     }
 
-    public static void Move(bool grabObject, bool vertexSnap) {
-        if (vertexSnap) {
-            VertexSnap.Snap(grabObject);
-        } else {
-            // Обычное перемещение объекта
+    private static class Mover
+    {
+        public static void Move(bool move) {
+            RaycastHit hit = Raycast.GetHit(PlayerMenu.CursorDirection);
+
+            if (hit.collider != null) {
+                if (isImplement) {
+                    if (move) {
+                        movingObject.transform.position = Vector3.Lerp(movingObject.transform.position, hit.point + offset, animationSpeed * Time.deltaTime);
+                    } else {
+                        movingObject.layer = default;
+                        isImplement = false;
+                    }
+                } else {
+                    if (move) {
+                        movingObject.layer = 2;
+                        isImplement = true;
+                    } else {
+                        movingObject = hit.collider.gameObject;
+                        offset = movingObject.transform.position - hit.point;
+                    }
+                }
+            }
         }
     }
 
     private static class VertexSnap
     {
         public static float radius = 0.3f;
-        private static bool isSnapping;
-        private static GameObject movingObject, targetObject; // moveObject - что двигать, targetObject - к чему двигать
-        private static Vector3 distance; // Дистанция между вертексом объекта и центром объекта
+        private static GameObject targetObject; // moveObject - что двигать, targetObject - к чему двигать
 
         public static void Snap(bool grabObject) {
             RaycastHit hit = Raycast.GetHit(PlayerMenu.CursorDirection);
@@ -37,20 +83,20 @@ public static class ObjectTools
             if (hit.collider != null) {
                 targetObject = hit.collider.gameObject;
 
-                if (isSnapping) {
+                if (isImplement) {
                     if (grabObject) {
-                        movingObject.transform.position = Vector3.Lerp(movingObject.transform.position, GetNearestVertex(hit.point) + distance, animationSpeed * Time.deltaTime);
+                        movingObject.transform.position = Vector3.Lerp(movingObject.transform.position, GetNearestVertex(hit.point) + offset, animationSpeed * Time.deltaTime);
                     } else {
                         movingObject.layer = default;
-                        isSnapping = false;
+                        isImplement = false;
                     }
                 } else {
                     if (grabObject) {
                         movingObject = targetObject;
                         movingObject.layer = 2;
-                        isSnapping = true;
+                        isImplement = true;
                     } else {
-                        distance = targetObject.transform.position - GetNearestVertex(hit.point);
+                        offset = targetObject.transform.position - GetNearestVertex(hit.point);
                     }
                 }
             }
