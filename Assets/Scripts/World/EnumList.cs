@@ -1,6 +1,6 @@
 /*
     Невошедшие:
-    FormComponents - Window.cs
+    FormComponents - Form.cs
     GameModeList - GameMode.cs
 */
 

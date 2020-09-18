@@ -69,10 +69,10 @@ public class Form : MonoBehaviour
             isFormMoving = false;
         } else {
             Vector3 offset;
-            if (targetCanvas.renderMode == RenderMode.WorldSpace) {
-                offset = formRect.position - Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
-            } else {
+            if (targetCanvas.renderMode == RenderMode.ScreenSpaceOverlay) {
                 offset = formRect.position - Input.mousePosition;
+            } else {
+                offset = formRect.position - Raycast.GetHit(Camera.main.ScreenPointToRay(Input.mousePosition)).point;
             }
 
             isFormMoving = true;

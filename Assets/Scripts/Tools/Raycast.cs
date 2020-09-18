@@ -24,16 +24,20 @@ public static class Raycast
         if (Physics.Raycast(ray, out hit)) {
             return hit;
         }
-        Debug.LogError("Ваааааще не так чё-то");
+        Debug.LogWarning("Луч не найден");
         return default;
     }
 
-    public static RaycastHit GetHit(Vector3 origin, Vector3 direction, int layer = 1 << 0) { // эТА шТУкА ЧЁТО НЕ раБотаЕТ
-        if (Physics.Raycast(origin, direction, out hit)) {
-            return hit;
-        }
-        Debug.LogError("Чё-то не так");
-        return default;
+    public static RaycastHit GetHit(Vector3 origin, Vector3 direction, int layer = 1 << 0) {
+        return GetHit(new Ray(origin, direction));
+    }
+
+    public static GameObject GetGameObject(Vector3 origin, Vector3 direction, int layer = 1 << 0) {
+        return GetHit(origin, direction).collider.gameObject;
+    }
+
+    public static GameObject GetGameObject(Ray ray, int layer = 1 << 0) {
+        return GetHit(ray).collider.gameObject;
     }
 
     public static GameObject GetUIHit(Vector3 cursorPosition) {

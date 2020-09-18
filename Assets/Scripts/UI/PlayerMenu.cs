@@ -9,6 +9,16 @@ public static class PlayerMenu
 
     public static Form[] mainForms;
     public static Form[] quickForms;
+    public static Vector3 CursorPosition {
+        get {
+            return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+    }
+    public static Ray CursorDirection {
+        get {
+            return Camera.main.ScreenPointToRay(Input.mousePosition);
+        }
+    }
 
     private static bool isGameplayMenuEnabled, isQuickMenuEnabled;
     
@@ -61,7 +71,11 @@ public static class PlayerMenu
         //     quickForm.gameObject.SetActive(true);
         // }
 
-        if (InputHandler.IsLeftMouseKeyPressed) {
+        bool leftMouseKeyState = InputHandler.IsLeftMouseKeyPressed;
+
+        ObjectTools.Move(leftMouseKeyState, true);
+
+        if (leftMouseKeyState) {
             DetectUI();
         }
     }
@@ -75,8 +89,16 @@ public static class PlayerMenu
         // }
     }
 
+    public static void DrawPoints(Vector3[] points) {
+
+    }
+
+    public static void RemovePoints() {
+        
+    }
+
     private static void DetectUI() {
-        GameObject foundObject = Raycast.GetUIHit(Input.mousePosition);
+        GameObject foundObject = Raycast.GetUIHit(CursorPosition);
         if (foundObject != null) {
             GameLevel.LocalPlayer.isUseComputer = true;
             GameLevel.LocalPlayer.usingComputer = foundObject.GetComponentInParent<VirtualMachine>();

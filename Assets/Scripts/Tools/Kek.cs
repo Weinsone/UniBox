@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,8 +11,9 @@ using UnityEngine.EventSystems;
 
 public class Kek : MonoBehaviour
 {
-    public bool posOrSiz;
-    public float posX, posY, sizX, sizY;
+    void Start() {
+        
+    }
 
     void Update() {
         

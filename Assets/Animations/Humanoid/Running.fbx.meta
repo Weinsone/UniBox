@@ -67,12 +67,12 @@ ModelImporter:
             value: 1
             inSlope: 0
             outSlope: 0
-            tangentMode: 0
+            tangentMode: 34
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.3446054
+            time: 0.044122536
             value: 0
             inSlope: 0
             outSlope: 0
@@ -81,7 +81,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.5820495
+            time: 0.6973925
             value: 0
             inSlope: 0
             outSlope: 0
@@ -90,7 +90,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.8234123
+            time: 0.81565905
             value: 1
             inSlope: 0
             outSlope: 0
@@ -124,7 +124,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.09735098
+            time: 0.23605832
             value: 0
             inSlope: 0
             outSlope: 0
@@ -133,7 +133,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.30156586
+            time: 0.32378584
             value: 1
             inSlope: 0
             outSlope: 0
@@ -142,7 +142,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.48027015
+            time: 0.46989498
             value: 1
             inSlope: 0
             outSlope: 0
@@ -151,7 +151,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.99868965
+            time: 0.5351129
             value: 0
             inSlope: 0
             outSlope: 0
@@ -161,14 +161,14 @@ ModelImporter:
             outWeight: 0
           - serializedVersion: 3
             time: 1
-            value: 1
+            value: 0
             inSlope: 0
             outSlope: 0
-            tangentMode: 34
+            tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
-          preInfinity: 1
+          preInfinity: 2
           postInfinity: 2
           rotationOrder: 4
       events: []
