@@ -2,26 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 /*
+    Отвечает за передвижение ManagedEntity.EntytyModel
     Пѡлагаетсѧ вѡ использованїе всѣмъ тварѧмъ Божїимъ ѿ игрокове дѡ ботовъ.
     Только православная церковь признаёт игроков (людей) равными ботам (андроидам).
 */
-public class Controller : MonoBehaviour
+public class PlayerController : MonoBehaviour, IController
 {
-    private Vector3 movement;
+    private Vector3 frameMovement;
 
     private CharacterController charController;
-    public AnimationManager animationManager;
+    private AnimationManager animationManager;
 
-    public float speed, verticalSpeed, gravity, terminaVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
-    private bool isJumping;
+    public float Speed { get; set; }
+    public float verticalSpeed, gravity, terminalVelocity, jumpForce, rotationSpeed; // заменить бы на int, чтоб быстрее работало
     public bool IsGrounded { get; private set; }
 
-    public Vector3 eyeLevel, footOffset;
+    public Vector3 EyeLevel { get; set; }
+    public Vector3 footOffset;
 
-    private void Start() {
-        charController = GetComponent<CharacterController>();
+    public void ApplySettings(EntitySettings settings) {
+        Speed = settings.speed;
+        gravity = GameSettings.Gravity;
+        terminalVelocity = settings.terminalVelocity;
+        jumpForce = settings.jumpForce;
+        rotationSpeed = settings.rotationSpeed;
+
+        EyeLevel = settings.eyeLevel;
+        footOffset = settings.footOffset;
+
+        frameMovement = Vector3.zero;
+
+        charController = transform.gameObject.AddComponent<CharacterController>();
+        charController.radius = settings.colliderRadius;
+        charController.height = settings.colliderHeigh;
+        charController.center = settings.colliderOffset;
+
         animationManager = new AnimationManager(GetComponent<Animator>(), string.Empty);
-    } 
+    }
 
     private void Update() {
         Fall(); // Если контроллер все время не тянуть вниз, даже когда он на земле, то charController.isGrounded начинает выдавать рандомное значение
@@ -30,7 +47,7 @@ public class Controller : MonoBehaviour
     }
 
     private void ApplyMovement() {
-        charController.Move(movement * Time.deltaTime);
+        charController.Move(frameMovement * Time.deltaTime);
     }
 
     private void Fall() {
@@ -40,19 +57,18 @@ public class Controller : MonoBehaviour
                 animationManager.SetBoolValue("Falling", false);
             }
         } else {
-            if (verticalSpeed > terminaVelocity) {
+            if (verticalSpeed > terminalVelocity) {
                 verticalSpeed += gravity;
                 animationManager.SetBoolValue("Falling", true);
             }
         }
-        movement.y = verticalSpeed;
+        frameMovement.y = verticalSpeed;
         ApplyMovement();
     }
 
     public void Move(float keyX, float keyY) {
-        movement = Vector3.zero;
-        movement.x = keyX * speed;
-        movement.z = keyY * speed;
+        frameMovement.x = keyX * Speed;
+        frameMovement.z = keyY * Speed;
 
     // <старый кусок>
         // Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
@@ -67,13 +83,27 @@ public class Controller : MonoBehaviour
 
         Transform targetCamera = GameLevel.LocalPlayerCamera.Camera.transform;
         targetCamera.eulerAngles = new Vector3(0, targetCamera.eulerAngles.y, 0);
-        movement = targetCamera.TransformDirection(movement);
+        frameMovement = targetCamera.TransformDirection(frameMovement);
 
         // Quaternion dir = Quaternion.LookRotation(targetCamera);
         transform.rotation = Quaternion.Lerp(transform.rotation, GameLevel.LocalPlayerCamera.Camera.transform.rotation, rotationSpeed);
 
         Animate(keyX, keyY);
         ApplyMovement();
+    }
+
+    public void Goto(Vector3 position, bool immediately) {
+        if (immediately) {
+            charController.enabled = false;
+            transform.position = position;
+            charController.enabled = true;
+        } else {
+            Move(position.x, position.z);
+        }
+    }
+
+    public void SetAnimation(string animationName) {
+
     }
 
     private void Animate(float x, float y) {
@@ -84,8 +114,8 @@ public class Controller : MonoBehaviour
         animationManager.AnimateIK(transform.forward, transform.rotation, footOffset);
     }
 
-    public void Look(Vector3 dir) {
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed);
+    public void Look(Vector3 direction) {
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed);
     }
 
     public void Jump() {

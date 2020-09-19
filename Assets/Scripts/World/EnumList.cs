@@ -15,12 +15,18 @@ public static class ControllerList
 {
     public enum Controllers
     {
-        mainPlayer
+        assistant
+    }
+
+    public enum Types
+    {
+        player,
+        bot
     }
 
     public static string Assign(Controllers controller) {
         switch (controller) {
-            case Controllers.mainPlayer:
+            case Controllers.assistant:
                 return "Assistant";
             default:
                 return null;

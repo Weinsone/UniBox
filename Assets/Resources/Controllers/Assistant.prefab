@@ -601,8 +601,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2391837234588806036}
   - component: {fileID: 5745327086112032494}
-  - component: {fileID: 397660807395485307}
-  - component: {fileID: 4576202076127634963}
+  - component: {fileID: 4040440560344775062}
   m_Layer: 2
   m_Name: Assistant
   m_TagString: Untagged
@@ -654,25 +653,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!143 &397660807395485307
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1687401331937057159}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 1.81
-  m_Radius: 0.3
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.98, z: 0}
---- !u!114 &4576202076127634963
+--- !u!114 &4040440560344775062
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -681,17 +662,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1687401331937057159}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7511153db55fb3e48bad9d5a347ed2df, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab6e88c72bd96f469ae53815fe33edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
-  verticalSpeed: 0
-  gravity: -0.4
-  terminaVelocity: -10
+  colliderRadius: 0.3
+  colliderHeigh: 1.8
+  colliderOffset: {x: 0, y: 0.98, z: 0}
+  footOffset: {x: 0, y: 0.08, z: 0}
+  speed: 2
+  terminalVelocity: -10
   jumpForce: 15
   rotationSpeed: 0.2
   eyeLevel: {x: 0, y: 1.7, z: 0}
-  footOffset: {x: 0, y: 0.07, z: 0}
 --- !u!1 &1780679009647507764
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public static class ObjectTools
     public static void Spawn(GameObject gameObject) {
         MonoBehaviour.Instantiate(
             original: gameObject,
-            position: GameLevel.LocalPlayer.Controller.transform.position + GameLevel.LocalPlayer.Controller.transform.forward,
+            position: GameLevel.LocalPlayer.EntityGameObject.transform.position + GameLevel.LocalPlayer.EntityGameObject.transform.forward,
             gameObject.transform.rotation
         );
         CreatedObjects.Add(gameObject);

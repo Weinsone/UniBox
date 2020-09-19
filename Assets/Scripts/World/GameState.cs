@@ -4,5 +4,6 @@ using UnityEngine;
 
 public static class GameState
 {
+    public static bool aiEnabled = true;
     public static bool areAllComputersLoaded;
 }

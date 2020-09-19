@@ -9,14 +9,14 @@ public interface IBot
     int Speed { get; set; }
     int Remembrance { get; set; } // время с секундах, где он будет помнить что с кем-то сражался (не то что сржался, скорее видел). По истечению этого значения пойдет по своим делам (0 - злопамятный и будет вечно помнить)
     IBotBehavior Behavior { get; set; }
-    GameObject EntityModel { get; } // реализация в ManagedEntity
-    Controller Controller { get; } // в ManagedEntity
+    GameObject EntityGameObject { get; } // реализация в ManagedEntity
+    IController Controller { get; } // в ManagedEntity
     float ViewAngle { get; set; } // в ManagedEntity
     float ViewDistance { get; set; } // в ManagedEntity
     Vector3 DirectionOfView { get; } // в ManagedEntity
-    /* тут должно быть поле с анимацией */
     void SetController(string controllerName); // в ManagedEntity
-    void GoTo(Vector3 position, bool immediately); // в ManagedEntity
+    void Animate(string animationName); // в ManagedEntity
+    void Goto(Vector3 position, bool immediately);
     void MakeSound(); // пердёж
     void Shoot(Vector3 target);
 }

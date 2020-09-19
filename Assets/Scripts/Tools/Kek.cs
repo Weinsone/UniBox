@@ -16,6 +16,8 @@ public class Kek : MonoBehaviour
     }
 
     void Update() {
-        
+        if (Input.GetKeyUp(KeyCode.L)) {
+            Server.AddBot(new Bot(Server.Bots.Count, "Bot" + Server.Bots.Count, BotBehaviorList.Behaviors.follower, ControllerList.Controllers.assistant, 45, 50));
+        }
     }
 }

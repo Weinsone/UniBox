@@ -10,7 +10,7 @@ public class Bot : ManagedEntity, IBot
     public int Speed { get; set; }
     public int Remembrance { get; set; }
 
-    public Bot(int id, string name, BotBehaviorList.Behaviors behavior, ControllerList.Controllers controllerName, float viewAngle, float viewDistance) : base(ControllerList.Assign(controllerName)) {
+    public Bot(int id, string name, BotBehaviorList.Behaviors behavior, ControllerList.Controllers controllerName, float viewAngle, float viewDistance) : base(ControllerList.Assign(controllerName), ControllerList.Types.bot) {
         Id = id;
         Name = name;
         Behavior = BotBehaviorList.Assign(this, behavior);

@@ -13,7 +13,7 @@ public class FollowerBehavior : IBotBehavior
     }
 
     public void Checkup() {
-        if (Ai.IsEnemyInView(Root.EntityModel.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
+        if (Ai.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
             OnTargetFound();
         } else {
             DailyRoutine();
@@ -25,13 +25,9 @@ public class FollowerBehavior : IBotBehavior
     }
 
     private void OnTargetFound() {
-        Vector3 targetDirection = Ai.TargetPosition - Root.EntityModel.transform.position;
-        Root.EntityModel.transform.LookAt(Ai.TargetPosition);
-
-        Debug.DrawLine(Root.EntityModel.transform.position, targetDirection, Color.white);
-
-        if (Vector3.Distance(Root.EntityModel.transform.position, Ai.TargetPosition) > 3) {
-            Root.EntityModel.transform.position += targetDirection.normalized * 5f * Time.deltaTime;
+        if (Vector3.Distance(Root.EntityGameObject.transform.position, Ai.TargetPosition) > 3) {
+            Root.Controller.Goto(Ai.TargetPosition, false);
+            Debug.Log("Вижу");
         }
     }
 

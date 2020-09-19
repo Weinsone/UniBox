@@ -11,22 +11,23 @@ public class GameLevel : MonoBehaviour
     public static CameraController LocalPlayerCamera { get; private set; }
 
     private void Start() {
-        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.mainPlayer);
+        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.assistant);
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
 
         PlayerMenu.CreatePlayerUI(GameObject.Find("MainCanvas"));
 
         if (Server.isHost) {
             // траханье с сокетами (мммм дельфи) (ахахах чую можно будет определить мой код по var'ам) (бля, разный почерк в коде, я такого еще не встречал)
-            Server.Targets.Add(LocalPlayer.EntityModel.transform);
+            Server.Targets.Add(LocalPlayer.EntityGameObject.transform);
         }
 
+        StartCoroutine(BotChecker());
         // PluginEngine.onProgramCompiled = new PluginEngine.CompiledPluginStateHandler(LocalPlayer.usingComputer.AddProgram);
     }
 
     private void Update() {
         if (InputHandler.IsMovementKeyPressed) { // Эта проверка нужна чтоб каждый кадр лишний раз не вызывались методы класса LocalPlayer.Controller
-            LocalPlayer.Controller.Move(InputHandler.HorizontalKeyInput, InputHandler.VerticalKeyInput); // 1 - нажата W, (-1) - нажата S, аналогично с A (1), D (-1)
+            LocalPlayer.Controller.Goto(new Vector3(InputHandler.HorizontalKeyInput, 0, InputHandler.VerticalKeyInput), false); // 1 - нажата W, (-1) - нажата S, аналогично с A (1), D (-1)
         }
         if (InputHandler.JumpInput) {
             LocalPlayer.Controller.Jump();
@@ -47,12 +48,15 @@ public class GameLevel : MonoBehaviour
             PlayerMenu.HideQuickMenu();
             LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
         }
-        LocalPlayerCamera.UpdatePosition(LocalPlayer.Controller.transform.position + LocalPlayer.Controller.eyeLevel);
+        LocalPlayerCamera.UpdatePosition(LocalPlayer.EntityGameObject.transform.position + LocalPlayer.Controller.EyeLevel);
     }
 
-    // private IEnumerable BotChecker() {
-    //     foreach (var bot in Server.Bots) {
-    //         bot.Behavior.Checkup();
-    //     }
-    // }
+    private IEnumerator BotChecker() {
+        while (GameState.aiEnabled) {
+            foreach (var bot in Server.Bots) {
+                bot.Behavior.Checkup();
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 }

@@ -21,22 +21,22 @@ public static class Server
 
     public static void AddClient(Player client) {
         Clients.Add(client);
-        targets.Add(client.EntityModel.transform);
+        targets.Add(client.EntityGameObject.transform);
     }
 
     public static void AddBot(IBot bot) {
         Bots.Add(bot);
-        targets.Add(bot.EntityModel.transform);
+        targets.Add(bot.EntityGameObject.transform);
     }
 
     public static void RemoveClient(Player client) {
         Clients.Remove(client);
-        targets.Remove(client.EntityModel.transform);
+        targets.Remove(client.EntityGameObject.transform);
     }
 
     public static void RemoveBot(IBot bot) {
         Bots.Remove(bot);
-        targets.Remove(bot.EntityModel.transform);
+        targets.Remove(bot.EntityGameObject.transform);
     }
 
     public static void CreateConnection() {

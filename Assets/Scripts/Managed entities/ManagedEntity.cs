@@ -7,40 +7,52 @@ public abstract class ManagedEntity
     public int Id { get; set; }
     public string Name { get; set; }
 
-    public GameObject EntityModel { get; private set; }
-    public Controller Controller { get; private set; }
+
+    public GameObject EntityGameObject { get; private set; }
+    public IController Controller { get; private set; }
     
     public float ViewAngle { get; set; }
     public float ViewDistance { get; set; }
     public Vector3 DirectionOfView {
         get {
-            return EntityModel.transform.forward;
+            return EntityGameObject.transform.forward;
         }
     }
 
-    public ManagedEntity(string controllerName) {
-        EntityModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
-        Controller = EntityModel.GetComponent<Controller>();
+    public ManagedEntity(string controllerName, ControllerList.Types controllerType) {
+        EntityGameObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
+        switch (controllerType) {
+            case ControllerList.Types.player:
+                Controller = EntityGameObject.AddComponent<PlayerController>();
+                break;
+            case ControllerList.Types.bot:
+                Controller = EntityGameObject.AddComponent<BotController>();
+                break;
+            default:
+                Debug.LogError("Ошибка создания контроллера");
+                return;
+        }
+        Controller.ApplySettings(EntityGameObject.GetComponent<EntitySettings>());
+    }
+
+    public void Animate(string animationName) {
+        Controller.SetAnimation(animationName);
+    }
+
+    public void Goto(Vector3 position, bool immediately) {
+        Controller.Goto(position, immediately);
     }
 
     public void SetController(string controllerName) {
-        Transform previousModelTransform = EntityModel.transform;
+        Transform previousModelTransform = EntityGameObject.transform;
 
-        MonoBehaviour.Destroy(EntityModel);
-        EntityModel = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
+        MonoBehaviour.Destroy(EntityGameObject);
+        EntityGameObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
 
-        EntityModel.transform.position = previousModelTransform.position;
-        EntityModel.transform.rotation = previousModelTransform.rotation;
-        EntityModel.transform.localScale = previousModelTransform.localScale;
+        EntityGameObject.transform.position = previousModelTransform.position;
+        EntityGameObject.transform.rotation = previousModelTransform.rotation;
+        EntityGameObject.transform.localScale = previousModelTransform.localScale;
 
-        Controller = EntityModel.GetComponent<Controller>();
-    }
-
-    public void GoTo(Vector3 position, bool immediately = true) {
-        if (immediately) {
-            EntityModel.transform.position = position;
-        } else {
-            // тут уже нужно с сеткой навигации играться
-        }
+        Controller = EntityGameObject.GetComponent<PlayerController>();
     }
 }

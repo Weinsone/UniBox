@@ -76,7 +76,7 @@ public class Form : MonoBehaviour
             }
 
             isFormMoving = true;
-            StartCoroutine("FormMover", offset);
+            StartCoroutine(FormMover(offset));
         }
     }
 

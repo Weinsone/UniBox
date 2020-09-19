@@ -13,7 +13,7 @@ public class AggressiveBehavior : IBotBehavior
     }
 
     public void Checkup() {
-        if (Ai.IsEnemyInView(Root.EntityModel.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
+        if (Ai.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
             OnTargetFound();
         } else {
             DailyRoutine();
