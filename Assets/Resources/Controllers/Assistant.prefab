@@ -669,11 +669,11 @@ MonoBehaviour:
   colliderHeigh: 1.8
   colliderOffset: {x: 0, y: 0.98, z: 0}
   footOffset: {x: 0, y: 0.08, z: 0}
+  eyeLevel: {x: 0, y: 1.7, z: 0}
   speed: 2
   terminalVelocity: -10
   jumpForce: 15
   rotationSpeed: 0.2
-  eyeLevel: {x: 0, y: 1.7, z: 0}
 --- !u!1 &1780679009647507764
 GameObject:
   m_ObjectHideFlags: 0

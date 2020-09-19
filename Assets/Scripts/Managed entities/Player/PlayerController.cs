@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     Отвечает за передвижение ManagedEntity.EntytyModel
-    Пѡлагаетсѧ вѡ использованїе всѣмъ тварѧмъ Божїимъ ѿ игрокове дѡ ботовъ.
-    Только православная церковь признаёт игроков (людей) равными ботам (андроидам).
 */
 public class PlayerController : MonoBehaviour, IController
 {
@@ -66,7 +64,7 @@ public class PlayerController : MonoBehaviour, IController
         ApplyMovement();
     }
 
-    public void Move(float keyX, float keyY) {
+    private void Move(float keyX, float keyY) {
         frameMovement.x = keyX * Speed;
         frameMovement.z = keyY * Speed;
 
@@ -88,7 +86,7 @@ public class PlayerController : MonoBehaviour, IController
         // Quaternion dir = Quaternion.LookRotation(targetCamera);
         transform.rotation = Quaternion.Lerp(transform.rotation, GameLevel.LocalPlayerCamera.Camera.transform.rotation, rotationSpeed);
 
-        Animate(keyX, keyY);
+        AnimateMovement(keyX, keyY);
         ApplyMovement();
     }
 
@@ -102,12 +100,12 @@ public class PlayerController : MonoBehaviour, IController
         }
     }
 
-    public void SetAnimation(string animationName) {
-
+    private void AnimateMovement(float x, float y) {
+        animationManager.SetMovementValues(x, y);
     }
 
-    private void Animate(float x, float y) {
-        animationManager.SetMovementValues(x, y);
+    public void SetAnimation(string animationName) {
+
     }
 
     private void OnAnimatorIK() {

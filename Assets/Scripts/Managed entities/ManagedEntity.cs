@@ -29,7 +29,6 @@ public abstract class ManagedEntity
                 Controller = EntityGameObject.AddComponent<BotController>();
                 break;
             default:
-                Debug.LogError("Ошибка создания контроллера");
                 return;
         }
         Controller.ApplySettings(EntityGameObject.GetComponent<EntitySettings>());

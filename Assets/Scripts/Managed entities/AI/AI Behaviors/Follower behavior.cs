@@ -13,15 +13,17 @@ public class FollowerBehavior : IBotBehavior
     }
 
     public void Checkup() {
-        if (Ai.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
-            OnTargetFound();
-        } else {
-            DailyRoutine();
-        }
+        // if (Ai.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
+        //     OnTargetFound();
+        // } else {
+        //     DailyRoutine();
+        // }
+        DailyRoutine();
     }
 
     private void DailyRoutine() {
-        Root.Controller.Jump();
+        MonoBehaviour kek = GameObject.Find("ScriptHandler").GetComponent<Kek>();
+        kek.StartCoroutine("RunningAround", Root);
     }
 
     private void OnTargetFound() {
