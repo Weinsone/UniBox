@@ -57,25 +57,33 @@ public class AnimationManager
         animator.SetBool(boolName, state);
     }
 
+    public void CastRightSurface() {
+        rightSurface = Raycast.GetHit(new Ray(rightFoot.position, Vector3.down));
+    }
+
+    public void CastLeftSurface() {
+        leftSurface = Raycast.GetHit(new Ray(leftFoot.position, Vector3.down));
+    }
+
     public void AnimateIK(Vector3 controllerDirection, Quaternion controllerRotation, Vector3 controllerFootOffset) {
-        rightWeight = animator.GetFloat("RightFootIK");
-        leftWeight = animator.GetFloat("LeftFootIK");
+        // rightWeight = animator.GetFloat("RightFootIK");
+        // leftWeight = animator.GetFloat("LeftFootIK");
 
-        if (rightWeight < 0.8f) {
-            latestRightFootRotation = controllerRotation;
-            latestRightKneeDirection = controllerDirection;
+        // if (rightWeight < 0.8f) {
+        //     latestRightFootRotation = controllerRotation;
+        //     latestRightKneeDirection = controllerDirection;
 
-            rightSurface = Raycast.GetHit(new Ray(rightFoot.position, Vector3.down)); // rootFoot.position игнорит текущую позицию скелета, применяет значения анимации
-        }
-        if (leftWeight < 0.8f) {
-            latestLeftFootRotation = controllerRotation;
-            latestLeftKneeDirection = controllerDirection;
+        //     // rightSurface = Raycast.GetHit(new Ray(rightFoot.position, Vector3.down)); // rootFoot.position игнорит текущую позицию скелета, применяет значения анимации
+        // }
+        // if (leftWeight < 0.8f) {
+        //     latestLeftFootRotation = controllerRotation;
+        //     latestLeftKneeDirection = controllerDirection;
             
-            leftSurface = Raycast.GetHit(new Ray(leftFoot.position, Vector3.down));
-        }
+        //     // leftSurface = Raycast.GetHit(new Ray(leftFoot.position, Vector3.down));
+        // }
 
-        SetIKPosition(controllerFootOffset);
-        SetIKHintPosition();
+        // SetIKPosition(controllerFootOffset);
+        // SetIKHintPosition();
     }
 
     private void SetIKPosition(Vector3 controllerFootOffset) {

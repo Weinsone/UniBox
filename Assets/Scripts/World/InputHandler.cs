@@ -12,8 +12,22 @@ public static class InputHandler
     public static float VerticalKeyInput  { get; private set; }
     public static bool IsMovementKeyPressed {
         get {
-            HorizontalKeyInput = Input.GetAxis("Horizontal");
-            VerticalKeyInput = Input.GetAxis("Vertical");
+            // HorizontalKeyInput = Input.GetAxis("Horizontal");
+            // VerticalKeyInput = Input.GetAxis("Vertical");
+            if (Input.GetKey(KeyCode.W)) {
+                VerticalKeyInput = 1f;
+            } else if(Input.GetKey(KeyCode.S)) {
+                VerticalKeyInput = -1f;
+            } else {
+                VerticalKeyInput = 0f;
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                HorizontalKeyInput = 1f;
+            } else if(Input.GetKey(KeyCode.A)) {
+                HorizontalKeyInput = -1f;
+            } else {
+                HorizontalKeyInput = 0f;
+            }
 
             if (HorizontalKeyInput != 0 || VerticalKeyInput != 0) {
                 return true;

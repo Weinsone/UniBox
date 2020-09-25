@@ -2,6 +2,7 @@
     Невошедшие:
     FormComponents - Form.cs
     GameModeList - GameMode.cs
+    ControllerList - IController.cs
 */
 
 public enum Privileges
@@ -9,29 +10,6 @@ public enum Privileges
     admin,
     player,
     guest
-}
-
-public static class ControllerList
-{
-    public enum Controllers
-    {
-        assistant
-    }
-
-    public enum Types
-    {
-        player,
-        bot
-    }
-
-    public static string Assign(Controllers controller) {
-        switch (controller) {
-            case Controllers.assistant:
-                return "Assistant";
-            default:
-                return null;
-        }
-    }
 }
 
 public static class BotBehaviorList {

@@ -65,14 +65,14 @@ ModelImporter:
           - serializedVersion: 3
             time: 0
             value: 1
-            inSlope: 0
-            outSlope: 0
+            inSlope: -8.99114
+            outSlope: -8.99114
             tangentMode: 34
             weightedMode: 0
             inWeight: 0
-            outWeight: 0
+            outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.044122536
+            time: 0.1112206
             value: 0
             inSlope: 0
             outSlope: 0
@@ -81,19 +81,10 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.6973925
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.81565905
+            time: 0.7715702
             value: 1
-            inSlope: 0
-            outSlope: 0
+            inSlope: Infinity
+            outSlope: Infinity
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
@@ -105,7 +96,7 @@ ModelImporter:
             outSlope: 0
             tangentMode: 34
             weightedMode: 0
-            inWeight: 0
+            inWeight: 0.33333334
             outWeight: 0
           preInfinity: 2
           postInfinity: 2
@@ -124,16 +115,16 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.23605832
-            value: 0
-            inSlope: 0
-            outSlope: 0
+            time: 0.3104846
+            value: 1.0023575
+            inSlope: Infinity
+            outSlope: Infinity
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.32378584
+            time: 0.39763373
             value: 1
             inSlope: 0
             outSlope: 0
@@ -142,16 +133,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.46989498
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5351129
+            time: 0.51834214
             value: 0
             inSlope: 0
             outSlope: 0
@@ -171,7 +153,21 @@ ModelImporter:
           preInfinity: 2
           postInfinity: 2
           rotationOrder: 4
-      events: []
+      events:
+      - time: 0.2413793
+        functionName: OnLeftFootStep
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7157485
+        functionName: OnRightFootStep
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

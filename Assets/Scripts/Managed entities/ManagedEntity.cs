@@ -7,51 +7,52 @@ public abstract class ManagedEntity
     public int Id { get; set; }
     public string Name { get; set; }
 
-
-    public GameObject EntityGameObject { get; private set; }
-    public IController Controller { get; private set; }
+    private GameObject entityGameObject;
+    public GameObject EntityGameObject { get { return entityGameObject; } }
+    public EntitySettings settings;
+    protected IController controller;
     
     public float ViewAngle { get; set; }
     public float ViewDistance { get; set; }
     public Vector3 DirectionOfView {
         get {
-            return EntityGameObject.transform.forward;
+            return entityGameObject.transform.forward;
         }
     }
 
-    public ManagedEntity(string controllerName, ControllerList.Types controllerType) {
-        EntityGameObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
-        switch (controllerType) {
-            case ControllerList.Types.player:
-                Controller = EntityGameObject.AddComponent<PlayerController>();
-                break;
-            case ControllerList.Types.bot:
-                Controller = EntityGameObject.AddComponent<BotController>();
-                break;
-            default:
-                return;
+    public ManagedEntity(ControllerList.Controllers controllerType, Vector3 spawnPosition) {
+        entityGameObject = ControllerList.AssignGameObject(controllerType, spawnPosition);
+        settings = entityGameObject.GetComponent<EntitySettings>();
+        controller = ControllerList.AssignController(controllerType, ref entityGameObject, settings);
+    }
+
+    public void PlayAnimation(string animationName) {
+        controller.PlayAnimation(animationName);
+    }
+
+    public void Teleport(Vector3 position) {
+        if (controller != null) {
+            controller.Teleport(position);
+        } else {
+            entityGameObject.transform.position = position;
         }
-        Controller.ApplySettings(EntityGameObject.GetComponent<EntitySettings>());
     }
 
-    public void Animate(string animationName) {
-        Controller.SetAnimation(animationName);
+    public Vector3 GetPosition() {
+        return EntityGameObject.transform.position;
     }
 
-    public void Goto(Vector3 position, bool immediately) {
-        Controller.Goto(position, immediately);
-    }
+    public void SetController(ControllerList.Controllers controllerType) {
+        Transform previousModelTransform = entityGameObject.transform;
 
-    public void SetController(string controllerName) {
-        Transform previousModelTransform = EntityGameObject.transform;
+        MonoBehaviour.Destroy(entityGameObject);
+        entityGameObject = ControllerList.AssignGameObject(controllerType, previousModelTransform.position);
+        settings = entityGameObject.GetComponent<EntitySettings>();
 
-        MonoBehaviour.Destroy(EntityGameObject);
-        EntityGameObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Controllers/" + controllerName));
+        // entityGameObject.transform.position = previousModelTransform.position;
+        entityGameObject.transform.rotation = previousModelTransform.rotation;
+        entityGameObject.transform.localScale = previousModelTransform.localScale;
 
-        EntityGameObject.transform.position = previousModelTransform.position;
-        EntityGameObject.transform.rotation = previousModelTransform.rotation;
-        EntityGameObject.transform.localScale = previousModelTransform.localScale;
-
-        Controller = EntityGameObject.GetComponent<PlayerController>();
+        controller = ControllerList.AssignController(controllerType, ref entityGameObject, settings);
     }
 }

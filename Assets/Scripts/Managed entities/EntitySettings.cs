@@ -9,5 +9,5 @@ public class EntitySettings : MonoBehaviour
     
     public Vector3 eyeLevel;
 
-    public float speed, terminalVelocity, jumpForce, rotationSpeed;
+    public float acceleration, slowDownSpeed, speed, terminalVelocity, jumpForce, rotationSpeed;
 }

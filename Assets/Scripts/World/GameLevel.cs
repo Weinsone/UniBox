@@ -11,7 +11,7 @@ public class GameLevel : MonoBehaviour
     public static CameraController LocalPlayerCamera { get; private set; }
 
     private void Start() {
-        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.assistant);
+        LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.assistant, new Vector3(0, 0.5f, 0));
         LocalPlayerCamera = new CameraController(GameObject.FindGameObjectWithTag("MainCamera"));
 
         PlayerMenu.CreatePlayerUI(GameObject.Find("MainCanvas"));
@@ -27,10 +27,12 @@ public class GameLevel : MonoBehaviour
 
     private void Update() {
         if (InputHandler.IsMovementKeyPressed) { // Эта проверка нужна чтоб каждый кадр лишний раз не вызывались методы класса LocalPlayer.Controller
-            LocalPlayer.Controller.Goto(new Vector3(InputHandler.HorizontalKeyInput, 0, InputHandler.VerticalKeyInput), false); // 1 - нажата W, (-1) - нажата S, аналогично с A (1), D (-1)
+            LocalPlayer.MoveTowards(new Vector3(InputHandler.HorizontalKeyInput, 0, InputHandler.VerticalKeyInput)); // 1 - нажата W, (-1) - нажата S, аналогично с A (1), D (-1)
+        } else {
+            LocalPlayer.Stop();
         }
         if (InputHandler.JumpInput) {
-            LocalPlayer.Controller.Jump();
+            LocalPlayer.Jump();
         }
     }
 
@@ -48,7 +50,7 @@ public class GameLevel : MonoBehaviour
             PlayerMenu.HideQuickMenu();
             LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
         }
-        LocalPlayerCamera.UpdatePosition(LocalPlayer.EntityGameObject.transform.position + LocalPlayer.Controller.EyeLevel);
+        LocalPlayerCamera.UpdatePosition(LocalPlayer.EntityGameObject.transform.position + LocalPlayer.EyeLevel);
     }
 
     private IEnumerator BotChecker() {
@@ -56,7 +58,8 @@ public class GameLevel : MonoBehaviour
             foreach (var bot in Server.Bots) {
                 bot.Behavior.Checkup();
             }
-            yield return new WaitForSeconds(0.1f);
+            // yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
     }
 }

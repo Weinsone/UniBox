@@ -5,7 +5,6 @@ using UnityEngine;
 public class PassiveBehavior : IBotBehavior
 {
     public IBot Root { get; set; }
-    public AIManager Ai { get; set; }
 
     public PassiveBehavior(IBot root) {
         Root = root;

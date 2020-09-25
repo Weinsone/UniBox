@@ -5,15 +5,14 @@ using UnityEngine;
 public class FollowerBehavior : IBotBehavior
 {
     public IBot Root { get; set; }
-    public AIManager Ai { get; set; }
+    public Vector3 targetPosition;
 
     public FollowerBehavior(IBot Root) {
         this.Root = Root;
-        Ai = new AIManager();
     }
 
     public void Checkup() {
-        // if (Ai.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance)) {
+        // if (AI.IsEnemyInView(Root.EntityGameObject.transform.position, Root.DirectionOfView, Root.ViewAngle, Root.ViewDistance, out targetPosition)) {
         //     OnTargetFound();
         // } else {
         //     DailyRoutine();
@@ -22,15 +21,16 @@ public class FollowerBehavior : IBotBehavior
     }
 
     private void DailyRoutine() {
-        MonoBehaviour kek = GameObject.Find("ScriptHandler").GetComponent<Kek>();
-        kek.StartCoroutine("RunningAround", Root);
+        // if (Vector3.Distance(Root.GetPosition(), Kek.pathHelper.transform.position) > 2f) {
+        //     Debug.Log("Dist: " + Vector3.Distance(Root.GetPosition(), Kek.pathHelper.transform.position) + "; Dir: " + AI.GetDirectionOfPath(Root.GetPosition(), Kek.pathHelper.transform.position));
+        //     Root.Goto(AI.GetDirectionOfPath(Root.GetPosition(), Kek.pathHelper.transform.position), false);
+        // }
+        Root.MoveTo(Kek.pathHelper.transform.position, 1f);
+        Root.LookAt(GameLevel.LocalPlayer.GetPosition());
     }
 
     private void OnTargetFound() {
-        if (Vector3.Distance(Root.EntityGameObject.transform.position, Ai.TargetPosition) > 3) {
-            Root.Controller.Goto(Ai.TargetPosition, false);
-            Debug.Log("Вижу");
-        }
+        
     }
 
     private void OnTargetLost() {

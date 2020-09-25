@@ -24,9 +24,10 @@ public static class Server
         targets.Add(client.EntityGameObject.transform);
     }
 
-    public static void AddBot(IBot bot) {
+    public static IBot AddBot(IBot bot) {
         Bots.Add(bot);
         targets.Add(bot.EntityGameObject.transform);
+        return bot;
     }
 
     public static void RemoveClient(Player client) {

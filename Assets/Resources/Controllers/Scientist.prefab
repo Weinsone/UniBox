@@ -146,13 +146,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7511153db55fb3e48bad9d5a347ed2df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frameMovement: {x: 0, y: 0, z: 0}
+  velocity: 0
+  acceleration: 2
   speed: 2.5
   verticalSpeed: 0
   gravity: -0.4
-  terminaVelocity: -10
+  terminalVelocity: 0
   jumpForce: 15
   rotationSpeed: 0.2
-  eyeLevel: {x: 0, y: 1.7, z: 0}
+  slowDown: 0
+  footOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &267638491966193298
 GameObject:
   m_ObjectHideFlags: 0
