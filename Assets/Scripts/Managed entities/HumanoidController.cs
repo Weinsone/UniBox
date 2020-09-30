@@ -70,12 +70,15 @@ public class HumanoidController : MonoBehaviour, IController
         if (IsGrounded) {
             if (verticalSpeed < gravity - 0.1f) { // Сброс verticalSpeed, если он был уменьшен через условие ниже (0.1f - погрешность, для сравнения, т.к к float "=" хрень применишь)
                 verticalSpeed = gravity;
-                animationManager.SetBoolValue("Falling", false);
+                // animationManager.SetBoolValue("Falling", false);
             }
+            animationManager.SetBoolValue("Falling", false); // unity govna
         } else {
             if (verticalSpeed > terminalVelocity) {
-                verticalSpeed += gravity;
-                animationManager.SetBoolValue("Falling", true);
+                verticalSpeed += gravity * Time.deltaTime;
+                // if (verticalSpeed < gravity - 2f) {
+                    animationManager.SetBoolValue("Falling", true);
+                // }
             }
         }
         frameMovement.y = verticalSpeed; // Если контроллер все время не тянуть вниз, даже когда он на земле, то charController.isGrounded начинает выдавать рандомное значение

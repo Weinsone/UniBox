@@ -30,87 +30,94 @@ public static class PluginEngine
     public static CompiledPluginStateHandler onProgramCompiled;
     // public static event CompiledPluginStateHandler notify;
 
-    // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\{0}.dll";
+    // private static readonly string runtimePath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\{0}.dll";
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
     
     public static List<IPlugin> PluginsOrPrograms { get; private set; } = new List<IPlugin>();
     // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
+
+
+
+
+
+
+
+
     public static bool Compile(string code, string assemblyName, bool isProgramCompilation, out string errorMessage) {
         string compilationName = string.Empty;
         errorMessage = string.Empty;
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
-        // if (!CheckTree(syntaxTree, out errorMessage)) {
-        //     Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
-        //     return false;
-        // }
-
-        CSharpCompilation compilation = CSharpCompilation.Create(
-            assemblyName,
-            syntaxTrees: new[] { syntaxTree },
-            references: new[] {
-                // MetadataReference.CreateFromFile(string.Format(runtimePath, "mscorlib")),
-                // MetadataReference.CreateFromFile(string.Format(runtimePath, "System")),
-                // MetadataReference.CreateFromFile(string.Format(runtimePath, "System.Core")),
-
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(UnityEngine.UI.Button).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(PluginEngine).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(FormButtonHandler).Assembly.Location)
-            },
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        
-        // using (MemoryStream dllStram = new MemoryStream()) {
-        //     using (MemoryStream pdbStream = new MemoryStream()) {
-        //         EmitResult emitResults = compilation.Emit(dllStram, pdbStream);
-        //         if (!emitResults.Success) {
-        // 
-        //         }
-        //     }
-        // }
-
-        try {
+        CSharpCompilation compilation;
+        if (CreateCompilation(code, assemblyName, out compilation, out errorMessage)) {
             EmitResult emitResult = compilation.Emit(Path.Combine(isProgramCompilation ? programFolderPath : pluginFolderPath, $"{assemblyName}.dll"));
 
-            if (!emitResult.Success) {
-                IEnumerable<Diagnostic> failures = emitResult.Diagnostics
-                    .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
-
-                foreach (var diagnostic in failures.OrderBy(o => o.Location.GetLineSpan().StartLinePosition.Line)) {
-                    errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
-                }
-
-                Debug.LogError("<color=Red>Plugin engine:" + errorMessage + "</color>");
-                return false;
-            } else {
-                Debug.Log("<color=Red>Plugin engine: Success</color>");
-                // onProgramCompiled(compilationName);
-                return true;
-            }
-        } catch (Exception e) {
-            Debug.LogError("<color=Red>Plugin engine:" + e.Message + "</color>");
-            errorMessage = e.Message;
+            Debug.Log("<color=Red>Plugin engine: Success</color>");
+            // onProgramCompiled(compilationName);
+            return true;
+        } else {
+            Debug.LogError("PE: " + errorMessage);
             return false;
         }
     }
 
-    public static bool CheckTree(SyntaxTree tree, out string syntaxError) {
+    private static bool CreateCompilation(string code, string assemblyName, out CSharpCompilation compilation, out string errorMessage) {
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
+
+        if (CheckTree(syntaxTree, out errorMessage)) {
+            compilation = CSharpCompilation.Create(
+                assemblyName,
+                syntaxTrees: new[] { syntaxTree },
+                references: new[] {
+                    // MetadataReference.CreateFromFile(string.Format(runtimePath, "mscorlib")),
+                    // MetadataReference.CreateFromFile(string.Format(runtimePath, "System")),
+                    // MetadataReference.CreateFromFile(string.Format(runtimePath, "System.Core")),
+
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(UnityEngine.UI.Button).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(UnityEngine.Transform).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(GameLevel).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(PluginEngine).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(FormButtonHandler).Assembly.Location)
+                },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            );
+
+            // IEnumerable<Diagnostic> failures = compilation.GetDiagnostics()
+            //     .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+            // if (failures.Count<Diagnostic>() > 0) {
+            //     foreach (var diagnostic in failures) {
+            //         errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
+            //     }
+            //     return false;
+            // }
+
+            return true;
+        } else {
+            compilation = null;
+            return false;
+        }
+    }
+
+    private static bool CheckTree(SyntaxTree tree, out string errorMessage) {
+        errorMessage = string.Empty;
         SyntaxNode root = tree.GetRoot();
 
-        IEnumerable<SyntaxToken> usingNames = root.DescendantNodes()
-            .Where(an => an is UsingDirectiveSyntax)
-            .Cast<IdentifierNameSyntax>()
-            .Select(vd => vd.Identifier);
-        
-        foreach (var usingName in usingNames) {
-            Debug.Log("<color=Red>PluginEngine - Usings:</color> " + usingName.Value);
+        IEnumerable<Diagnostic> failures = root.GetDiagnostics()
+            .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+        if (failures.Count<Diagnostic>() > 0) {
+            foreach (var diagnostic in failures) {
+                errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
+            }
+            return false;
         }
 
-        syntaxError = string.Empty;
+        var usingNames = root.DescendantNodes().OfType<UsingDirectiveSyntax>();
+        foreach (var usingName in usingNames) {
+            Debug.Log("<color=Red>PE - Usings:</color> " + usingName.Name);
+        }
+
         return true;
     }
 

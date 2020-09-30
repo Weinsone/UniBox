@@ -6,13 +6,17 @@ using UnityEngine.UI;
 public class VirtualMachine : MonoBehaviour
 {
     public List<IProgram> installedPrograms;
-    
+
     public IProgram ActiveProgram { get; set; }
     public Canvas computerCanvas;
+
+    private Transform startMenuViewport;
 
     void Start() {
         installedPrograms = new List<IProgram>();
         computerCanvas = transform.GetComponentInChildren<Canvas>();
+
+        startMenuViewport = transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0);
 
         UpdateProgramList();
     }
@@ -26,9 +30,12 @@ public class VirtualMachine : MonoBehaviour
     }
 
     public void AddProgram(string programName) {
+        PluginEngine.RefreshLibraries<IProgram>();
         foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
             if (program.Name == programName) {
                 installedPrograms.Add(program);
+                UpdateStartMenu(programName);
+                Debug.Log("KEEEEEEEEEEEEEEEEEEEEEEEEK");
             }
         }
     }
@@ -38,6 +45,7 @@ public class VirtualMachine : MonoBehaviour
     }
 
     public void UpdateProgramList() {
+        ClearStartMenu();
         PluginEngine.RefreshLibraries<IProgram>();
         foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
             installedPrograms.Add(program);
@@ -50,12 +58,17 @@ public class VirtualMachine : MonoBehaviour
     }
 
     private void UpdateStartMenu(string programName) {
-        // Transform startMenuContent = transform.Find("Computer screen");
-        Transform startMenuContent = transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0);
         GameObject startMenuItem = Instantiate((GameObject)Resources.Load("Virtual machine/Start Menu Item"));
         startMenuItem.transform.GetChild(0).GetComponent<Text>().text = programName;
-        Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuContent, 1);
-        // startMenuItem.transform.SetParent(startMenuContent);
+        Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuViewport, 1);
+    }
+
+    public void ClearStartMenu() {
+        Transform startMenuContent = startMenuViewport.GetChild(0);
+        for (int i = 0; i < startMenuContent.childCount; i++) {
+            Debug.Log("Удаление " + startMenuContent.GetChild(i).GetChild(0).GetComponent<Text>().text);
+            Destroy(startMenuContent.GetChild(i).gameObject);
+        }
     }
 
     public void Explode(int power) {

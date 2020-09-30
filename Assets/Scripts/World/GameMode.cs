@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +17,7 @@ public static class GameMode
         Form[] menuForms;
         switch (currentGameMode) {
             case GameModeList.sandbox:
-                menuForms = new Form[2];
+                menuForms = new Form[3];
 
                 // Загрузка из XML всех данных для окна (интерфейса)
                 // foreach (var menuWindow in menuWindows) {
@@ -26,9 +25,9 @@ public static class GameMode
                 // }
 
                 // Временный костыль
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 3; i++) {
                     if (i == 0) {
-                        menuForms[i] = Form.Initialize("Props", 175, 18, 850, 500);
+                        menuForms[i] = Form.Initialize("Props", 225, 20, 850, 500);
                         menuForms[i].AddComponent("PropList", ComponentType.scrollView, 0, 0, 850, 500);
                         GameObject assetListObject = menuForms[i].GetFormComponent("PropList");
 
@@ -39,16 +38,18 @@ public static class GameMode
                         assetListContent.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
                         UnityEngine.Object[] gameplayObjects = Resources.LoadAll("Objects");
-                        GameObject objectPreviewPerfab = (GameObject)Resources.Load("UI/ObjectPreview");
+                        GameObject previewButtonPerfab = (GameObject)Resources.Load("UI/ObjectPreview");
                         foreach (var gameplayObject in gameplayObjects) {
                             // Texture2D objectPreviewTexture = AssetPreview.GetAssetPreview(gameplayObject);
 
-                            Image objectPreview = MonoBehaviour.Instantiate(objectPreviewPerfab, assetListContent.transform).GetComponent<Image>();
-                            objectPreview.sprite = Sprite.Create(AssetPreview.GetAssetPreview(gameplayObject), new Rect(0, 0, 128, 128), objectPreview.rectTransform.pivot);
+                            GameObject previewButton = MonoBehaviour.Instantiate(previewButtonPerfab, assetListContent.transform);
+                            Image objectPreview = previewButton.GetComponent<Image>();
+                            // objectPreview.sprite = Sprite.Create(AssetPreview.GetAssetPreview(gameplayObject), new Rect(0, 0, 128, 128), objectPreview.rectTransform.pivot);
+                            objectPreview.sprite = Sprite.Create(Screenshot.CaptureIcon((GameObject)gameplayObject), new Rect(0, 0, 128, 128), objectPreview.rectTransform.pivot);
                             objectPreview.GetComponent<Button>().onClick.AddListener(() => ObjectTools.Spawn((GameObject)gameplayObject));
                         }
-                    } else {
-                        menuForms[i] = Form.Initialize("Tools", 1050, 18, 200, 500);
+                    } else if (i == 1) {
+                        menuForms[i] = Form.Initialize("Tools", 1200, 20, 200, 500);
                         GameObject buttonObject;
 
                         menuForms[i].AddComponent("MoverSelector", ComponentType.button, 10, 10, 180, default);
@@ -60,6 +61,15 @@ public static class GameMode
                         buttonObject = menuForms[i].GetFormComponent("VertexSnapSelector");
                         buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Vertex Snap Tool";
                         buttonObject.GetComponent<Button>().onClick.AddListener(() => ObjectTools.SetTool(ToolList.vertexSnap));
+                    } else {
+                        menuForms[i] = Form.Initialize("AI", 10, 20, 200, 500);
+
+                        GameObject buttonObject;
+
+                        menuForms[i].AddComponent("BotFollower", ComponentType.button, 10, 10, 180, default);
+                        buttonObject = menuForms[i].GetFormComponent("BotFollower");
+                        buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Bot follower";
+                        buttonObject.GetComponent<Button>().onClick.AddListener(() => Server.AddBot(new Bot(Server.Bots.Count, "Bot" + Server.Bots.Count, BotBehaviorList.Behaviors.follower, ControllerList.Controllers.assistant, new Vector3(0, 0.5f, 0))));
                     }
                     menuForms[i].gameObject.SetActive(false);
                 }

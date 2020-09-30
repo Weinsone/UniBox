@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class GameSettings
 {
-    public static float Gravity { get; private set; } = -0.5f;
+    public static float Gravity { get; private set; } = -25f;
 }

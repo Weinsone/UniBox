@@ -104,6 +104,7 @@ public static class PlayerMenu
         if (foundObject != null) {
             GameLevel.LocalPlayer.isUseComputer = true;
             GameLevel.LocalPlayer.usingComputer = foundObject.GetComponentInParent<VirtualMachine>();
+            PluginEngine.onProgramCompiled += GameLevel.LocalPlayer.usingComputer.AddProgram;
             return true;
         } else {
             return false;

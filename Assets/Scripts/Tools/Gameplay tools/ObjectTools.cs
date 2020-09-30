@@ -44,6 +44,7 @@ public static class ObjectTools
             gameObject.transform.rotation
         );
         CreatedObjects.Add(gameObject);
+        Debug.Log(gameObject.transform.InverseTransformPoint(gameObject.GetComponent<Collider>().bounds.max).y);
     }
 
     private static class Mover
@@ -54,7 +55,7 @@ public static class ObjectTools
             if (hit.collider != null) {
                 if (isImplement) {
                     if (move) {
-                        movingObject.transform.position = Vector3.Lerp(movingObject.transform.position, hit.point + offset, animationSpeed * Time.deltaTime);
+                        movingObject.transform.position = Vector3.Lerp(movingObject.transform.position, hit.point + new Vector3(0, movingObject.transform.InverseTransformPoint(movingObject.GetComponent<Collider>().bounds.max).y * movingObject.transform.localScale.y, 0), animationSpeed * Time.deltaTime);
                     } else {
                         movingObject.layer = default;
                         isImplement = false;
@@ -65,7 +66,6 @@ public static class ObjectTools
                         isImplement = true;
                     } else {
                         movingObject = hit.collider.gameObject;
-                        offset = movingObject.transform.position - hit.point;
                     }
                 }
             }

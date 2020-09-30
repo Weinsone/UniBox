@@ -21,11 +21,7 @@ public class FollowerBehavior : IBotBehavior
     }
 
     private void DailyRoutine() {
-        // if (Vector3.Distance(Root.GetPosition(), Kek.pathHelper.transform.position) > 2f) {
-        //     Debug.Log("Dist: " + Vector3.Distance(Root.GetPosition(), Kek.pathHelper.transform.position) + "; Dir: " + AI.GetDirectionOfPath(Root.GetPosition(), Kek.pathHelper.transform.position));
-        //     Root.Goto(AI.GetDirectionOfPath(Root.GetPosition(), Kek.pathHelper.transform.position), false);
-        // }
-        Root.MoveTo(Kek.pathHelper.transform.position, 1f);
+        Root.MoveTo(GameLevel.LocalPlayer.GetPosition(), 1.5f);
         Root.LookAt(GameLevel.LocalPlayer.GetPosition());
     }
 
