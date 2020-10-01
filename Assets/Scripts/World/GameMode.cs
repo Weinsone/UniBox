@@ -29,7 +29,7 @@ public static class GameMode
                     if (i == 0) {
                         menuForms[i] = Form.Initialize("Props", 225, 20, 850, 500);
                         menuForms[i].AddComponent("PropList", ComponentType.scrollView, 0, 0, 850, 500);
-                        GameObject assetListObject = menuForms[i].GetFormComponent("PropList");
+                        GameObject assetListObject = menuForms[i].GetComponentByName("PropList");
 
                         GameObject assetListContent = assetListObject.transform.GetChild(0).GetChild(0).gameObject;
                         GridLayoutGroup layout = assetListContent.AddComponent<GridLayoutGroup>();
@@ -53,12 +53,12 @@ public static class GameMode
                         GameObject buttonObject;
 
                         menuForms[i].AddComponent("MoverSelector", ComponentType.button, 10, 10, 180, default);
-                        buttonObject = menuForms[i].GetFormComponent("MoverSelector");
+                        buttonObject = menuForms[i].GetComponentByName("MoverSelector");
                         buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Move Tool";
                         buttonObject.GetComponent<Button>().onClick.AddListener(() => ObjectTools.SetTool(ToolList.mover));
 
                         menuForms[i].AddComponent("VertexSnapSelector", ComponentType.button, 10, 45, 180, default);
-                        buttonObject = menuForms[i].GetFormComponent("VertexSnapSelector");
+                        buttonObject = menuForms[i].GetComponentByName("VertexSnapSelector");
                         buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Vertex Snap Tool";
                         buttonObject.GetComponent<Button>().onClick.AddListener(() => ObjectTools.SetTool(ToolList.vertexSnap));
                     } else {
@@ -67,7 +67,7 @@ public static class GameMode
                         GameObject buttonObject;
 
                         menuForms[i].AddComponent("BotFollower", ComponentType.button, 10, 10, 180, default);
-                        buttonObject = menuForms[i].GetFormComponent("BotFollower");
+                        buttonObject = menuForms[i].GetComponentByName("BotFollower");
                         buttonObject.transform.GetChild(0).GetComponent<Text>().text = "Bot follower";
                         buttonObject.GetComponent<Button>().onClick.AddListener(() => Server.AddBot(new Bot(Server.Bots.Count, "Bot" + Server.Bots.Count, BotBehaviorList.Behaviors.follower, ControllerList.Controllers.assistant, new Vector3(0, 0.5f, 0))));
                     }

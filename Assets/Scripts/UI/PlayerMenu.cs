@@ -33,8 +33,9 @@ public static class PlayerMenu
     }
 
     public static void HideCursor() {
-        Cursor.visible = false;
-        GameLevel.LocalPlayer.isUseComputer = false; // temp
+        if (!GameLevel.LocalPlayer.isUseComputer) {
+            Cursor.visible = false;
+        }
     }
 
     public static void CreatePlayerUI(GameObject foundObject) {
@@ -74,7 +75,7 @@ public static class PlayerMenu
         bool leftMouseKeyState = InputHandler.IsLeftMouseKeyPressed;
 
         if (leftMouseKeyState) {
-            if (DetectUI()) {
+            if (FindComputer()) {
                 return;
             }
         }
@@ -99,15 +100,21 @@ public static class PlayerMenu
         
     }
 
-    private static bool DetectUI() {
+    private static bool FindComputer() {
         GameObject foundObject = Raycast.GetUIHit(Input.mousePosition);
         if (foundObject != null) {
             GameLevel.LocalPlayer.isUseComputer = true;
             GameLevel.LocalPlayer.usingComputer = foundObject.GetComponentInParent<VirtualMachine>();
-            PluginEngine.onProgramCompiled += GameLevel.LocalPlayer.usingComputer.AddProgram;
+            PluginEngine.onProgramCompiled = GameLevel.LocalPlayer.usingComputer.AddProgram;
+            GameLevel.onExit = ExitComputer;
             return true;
         } else {
             return false;
         }
+    }
+
+    private static void ExitComputer() {
+        GameLevel.LocalPlayer.isUseComputer = false;
+        GameLevel.LocalPlayer.usingComputer = null;
     }
 }

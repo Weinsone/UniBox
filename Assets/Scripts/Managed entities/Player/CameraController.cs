@@ -14,15 +14,20 @@ public class CameraController
         Camera = camera;
     }
 
-    public void View(float x, float y) {
+    public void UpdateViewDirection(float x, float y) {
         this.x += x;
         this.y += y;
         this.y = Mathf.Clamp(this.y, -90, 90);
         rotation = Quaternion.AngleAxis(this.x, Vector3.up) * Quaternion.AngleAxis(-this.y, Vector3.right);
     }
 
-    public void UpdatePosition(Vector3 target) {
-        Camera.transform.position = target - (rotation * offset);
-        Camera.transform.LookAt(target);
+    public void UpdatePosition(Vector3 positionTarget) {
+        if (GameLevel.LocalPlayer.isUseComputer) {
+            Camera.transform.position = Vector3.Lerp(Camera.transform.position, GameLevel.LocalPlayer.usingComputer.computerCanvas.transform.position - GameLevel.LocalPlayer.usingComputer.computerCanvas.transform.forward, 5 *Time.deltaTime);
+            Camera.transform.rotation = Quaternion.Lerp(Camera.transform.rotation, GameLevel.LocalPlayer.usingComputer.computerCanvas.transform.rotation, 5 * Time.deltaTime);
+        } else {
+            Camera.transform.position = positionTarget - (rotation * offset);
+            Camera.transform.LookAt(positionTarget);
+        }
     }
 }

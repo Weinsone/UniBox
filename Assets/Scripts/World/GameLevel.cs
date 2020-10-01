@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     Тупо батя: отвечает игровой цикл
-    TODO: Нужно будет переименовать класс, т.к его роль с контроллера уровня изменилась на управление игровым циклом (LocalServer? GameCycle?) да не и так норм
 */
 public class GameLevel : MonoBehaviour
 {
-    public static Player LocalPlayer { get; private set; } // Локальный игрок и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
+    public static Player LocalPlayer { get; private set; } // Представление локального игрока и его тушка (LocalPlayer.Model, LocalPlayer.Controller)
     public static CameraController LocalPlayerCamera { get; private set; }
+
+    public delegate void ExitButtonStateHandler();
+    public static ExitButtonStateHandler onExit;
 
     private void Start() {
         LocalPlayer = new Player(Server.Clients.Count, "Local Player", Privileges.admin, ControllerList.Controllers.assistant, new Vector3(0, 0.5f, 0));
@@ -34,6 +36,9 @@ public class GameLevel : MonoBehaviour
         if (InputHandler.JumpInput) {
             LocalPlayer.Jump();
         }
+        if (InputHandler.IsExitButtonPressed) {
+            onExit();
+        }
     }
 
     private void LateUpdate() {
@@ -48,7 +53,7 @@ public class GameLevel : MonoBehaviour
             PlayerMenu.HideCursor();
             PlayerMenu.HideGameplayMenu();
             PlayerMenu.HideQuickMenu();
-            LocalPlayerCamera.View(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
+            LocalPlayerCamera.UpdateViewDirection(InputHandler.HorizontalMouseInput, InputHandler.VerticalMouseInput); // НАСТРОИТЬ SENSITIVITY!
         }
         LocalPlayerCamera.UpdatePosition(LocalPlayer.EntityGameObject.transform.position + LocalPlayer.EyeLevel);
     }

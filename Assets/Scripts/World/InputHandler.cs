@@ -42,6 +42,11 @@ public static class InputHandler
         }
     }
 
+    public static bool IsExitButtonPressed {
+        get {
+            return Input.GetKey(KeyCode.Escape);
+        }
+    }
     public static bool GameplayMenuState { get; private set; }
     public static bool QuckMenuState { get; private set; }
     public static bool IsGameplayMenuKeyPressed {

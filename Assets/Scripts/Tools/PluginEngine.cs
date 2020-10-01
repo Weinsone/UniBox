@@ -34,7 +34,7 @@ public static class PluginEngine
     private static readonly string programFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestProgramFolder");
     private static readonly string pluginFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "TestPluginFolder");
     
-    public static List<IPlugin> PluginsOrPrograms { get; private set; } = new List<IPlugin>();
+    public static List<IPlugin> PluginsAndPrograms { get; private set; } = new List<IPlugin>();
     // public static List<IProgram> Programs { get; private set; } = new List<IProgram>();
 
 
@@ -45,16 +45,12 @@ public static class PluginEngine
 
 
 
-    public static bool Compile(string code, string assemblyName, bool isProgramCompilation, out string errorMessage) {
-        string compilationName = string.Empty;
-        errorMessage = string.Empty;
-
-        CSharpCompilation compilation;
-        if (CreateCompilation(code, assemblyName, out compilation, out errorMessage)) {
-            EmitResult emitResult = compilation.Emit(Path.Combine(isProgramCompilation ? programFolderPath : pluginFolderPath, $"{assemblyName}.dll"));
+    public static bool Compile(string code, bool isProgramCompilation, out string errorMessage) {
+        if (CreateCompilation(code, out CSharpCompilation compilation, out string compilationName, out errorMessage)) {
+            EmitResult emitResult = compilation.Emit(Path.Combine(isProgramCompilation ? programFolderPath : pluginFolderPath, $"{compilationName}.dll"));
 
             Debug.Log("<color=Red>Plugin engine: Success</color>");
-            // onProgramCompiled(compilationName);
+            onProgramCompiled(compilationName);
             return true;
         } else {
             Debug.LogError("PE: " + errorMessage);
@@ -62,12 +58,12 @@ public static class PluginEngine
         }
     }
 
-    private static bool CreateCompilation(string code, string assemblyName, out CSharpCompilation compilation, out string errorMessage) {
+    private static bool CreateCompilation(string code, out CSharpCompilation compilation, out string compilationName, out string errorMessage) {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
-        if (CheckTree(syntaxTree, out errorMessage)) {
+        if (CheckTree(syntaxTree, out compilationName, out errorMessage)) {
             compilation = CSharpCompilation.Create(
-                assemblyName,
+                compilationName,
                 syntaxTrees: new[] { syntaxTree },
                 references: new[] {
                     // MetadataReference.CreateFromFile(string.Format(runtimePath, "mscorlib")),
@@ -84,40 +80,51 @@ public static class PluginEngine
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
             );
 
-            // IEnumerable<Diagnostic> failures = compilation.GetDiagnostics()
-            //     .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
-            // if (failures.Count<Diagnostic>() > 0) {
-            //     foreach (var diagnostic in failures) {
-            //         errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
-            //     }
-            //     return false;
-            // }
-
-            return true;
+            IEnumerable<Diagnostic> failures = compilation.GetDiagnostics()
+                .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+            if (failures.Count<Diagnostic>() > 0) {
+                errorMessage = string.Empty;
+                foreach (var diagnostic in failures) {
+                    errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
+                }
+                return false;
+            } else {
+                return true;
+            }
         } else {
             compilation = null;
             return false;
         }
     }
 
-    private static bool CheckTree(SyntaxTree tree, out string errorMessage) {
-        errorMessage = string.Empty;
+    private static bool CheckTree(SyntaxTree tree, out string compilationName, out string errorMessage) {
         SyntaxNode root = tree.GetRoot();
 
         IEnumerable<Diagnostic> failures = root.GetDiagnostics()
             .Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
         if (failures.Count<Diagnostic>() > 0) {
+            errorMessage = string.Empty;
             foreach (var diagnostic in failures) {
                 errorMessage += $"Line {diagnostic.Location.GetLineSpan().StartLinePosition.Line}: {diagnostic.GetMessage()}\n"; // есть если что, на всякий, diagnostic.Id
             }
+            compilationName = null;
             return false;
         }
+
 
         var usingNames = root.DescendantNodes().OfType<UsingDirectiveSyntax>();
         foreach (var usingName in usingNames) {
             Debug.Log("<color=Red>PE - Usings:</color> " + usingName.Name);
+            compilationName = null;
+            // return false;
         }
 
+        var compilationNameDeclaration = root.DescendantNodes().OfType<PropertyDeclarationSyntax>().Where(name => name.Identifier.Value.ToString() == "Name");
+        compilationName = compilationNameDeclaration.First<PropertyDeclarationSyntax>().Initializer.Value.ToString();
+        compilationName = compilationName.Remove(0, 1);
+        compilationName = compilationName.Remove(compilationName.Length - 1, 1);
+
+        errorMessage = null;
         return true;
     }
 
@@ -134,7 +141,7 @@ public static class PluginEngine
     // }
 
     public static T GetLibrary<T>(string name) where T: IPlugin {
-        foreach (var library in PluginsOrPrograms) {
+        foreach (var library in PluginsAndPrograms) {
             if (library.Name == name) {
                 return (T)library;
             }
@@ -145,7 +152,7 @@ public static class PluginEngine
     public static void RefreshLibraries<T>() where T: IPlugin {
         bool isPlugin = typeof(T) == typeof(IPlugin); // false == IProgram
         string libraryFolder = isPlugin ? pluginFolderPath : programFolderPath;
-        PluginsOrPrograms.Clear();
+        PluginsAndPrograms.Clear();
 
         DirectoryInfo libraryDirectory = new DirectoryInfo(libraryFolder);
         if (!libraryDirectory.Exists) {
@@ -163,7 +170,7 @@ public static class PluginEngine
 
             foreach (var type in types) {
                 IPlugin plugin = isPlugin ? plugin = assembly.CreateInstance(type.FullName) as IPlugin : plugin = assembly.CreateInstance(type.FullName) as IProgram;
-                PluginsOrPrograms.Add(plugin);
+                PluginsAndPrograms.Add(plugin);
             }
         }
     }

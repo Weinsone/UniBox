@@ -119,15 +119,6 @@ public class Form : MonoBehaviour
         targetCanvas.transform.localScale = oldScale;
     }
 
-    public GameObject GetFormComponent(string componentName) {
-        foreach (var component in components) {
-            if (componentName == component.Key) {
-                return component.Value;
-            }
-        }
-        return default;
-    }
-
     public void AddComponent(string componentName, ComponentType componentType, float positionX = default, float positionY = default, float sizeX = default, float sixeY = default) {
         GameObject component = Instantiate((GameObject)Resources.Load("UI/Forms/Components/" + componentType.ToString()));
         AdaptiveAndShow(targetCanvas, component.transform, transform, 2);
@@ -136,24 +127,19 @@ public class Form : MonoBehaviour
             SetComponentSize(component, sizeX, sixeY);
         }
         components.Add(componentName, component);
-        // return component;
     }
 
-    // public void SetComponentValue<TValue>(string componentName, TValue value) {
-    //     foreach (var component in components) {
-    //         if (componentName == component.Key) {
-                
-    //         }
-    //     }
-    // }
-
-    public TProperties GetComponentProperties<TProperties>(string componentName) {
+    public GameObject GetComponentByName(string componentName) {
         foreach (var component in components) {
             if (componentName == component.Key) {
-                return component.Value.GetComponent<TProperties>();
+                return component.Value;
             }
         }
-        return default(TProperties);
+        return default;
+    }
+
+    public TComponent GetProperties<TComponent>(string componentName) {
+        return GetComponentByName(componentName).GetComponent<TComponent>();
     }
 
     public void SetComponentPosition(GameObject componentObject, float positionX, float positionY) {
@@ -163,13 +149,7 @@ public class Form : MonoBehaviour
     }
 
     public void SetComponentPosition(string componentName, float positionX, float positionY) {
-        foreach (var component in components) {
-            if (component.Key == componentName) {
-                SetComponentPosition(component.Value, positionX, positionY);
-                return;
-            }
-        }
-        Debug.LogError("Component pos: " + componentName + " не найден");
+        SetComponentPosition(GetComponentByName(componentName), positionX, positionY);
     }
 
     public void SetComponentSize(GameObject componentObject, float sizeX, float sizeY) {
@@ -183,13 +163,12 @@ public class Form : MonoBehaviour
     }
 
     public void SetComponentSize(string componentName, float sizeX, float sizeY) {
-        foreach (var component in components) {
-            if (component.Key == componentName) {
-                SetComponentSize(component.Value, sizeX, sizeY);
-                return;
-            }
-        }
-        Debug.LogError("Component siz: " + componentName + " не найден");
+        SetComponentSize(GetComponentByName(componentName), sizeX, sizeY);
+    }
+
+    public void SetComponentParent(string componentName, string parentName) {
+        Transform parent = GetComponentByName(parentName).transform;
+        GetComponentByName(componentName).transform.SetParent(parent);
     }
 
     public void OnClose(GameObject form) {

@@ -18,7 +18,11 @@ public class VirtualMachine : MonoBehaviour
 
         startMenuViewport = transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0);
 
-        UpdateProgramList();
+        RefreshProgramList();
+    }
+
+    public void Explode(int power) {
+        
     }
 
     public void RunProgram(string programName) {
@@ -31,11 +35,11 @@ public class VirtualMachine : MonoBehaviour
 
     public void AddProgram(string programName) {
         PluginEngine.RefreshLibraries<IProgram>();
-        foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
+        foreach (IProgram program in PluginEngine.PluginsAndPrograms) {
             if (program.Name == programName) {
                 installedPrograms.Add(program);
-                UpdateStartMenu(programName);
-                Debug.Log("KEEEEEEEEEEEEEEEEEEEEEEEEK");
+                AddItemToStartMenu(programName);
+                
             }
         }
     }
@@ -44,20 +48,20 @@ public class VirtualMachine : MonoBehaviour
 
     }
 
-    public void UpdateProgramList() {
-        ClearStartMenu();
-        PluginEngine.RefreshLibraries<IProgram>();
-        foreach (IProgram program in PluginEngine.PluginsOrPrograms) {
-            installedPrograms.Add(program);
-            UpdateStartMenu(program.Name);
-        }
-    }
-
     public static void GetCompiledProgram(string programName) {
         GameLevel.LocalPlayer.usingComputer.AddProgram(programName);
     }
 
-    private void UpdateStartMenu(string programName) {
+    public void RefreshProgramList() {
+        ClearStartMenu();
+        PluginEngine.RefreshLibraries<IProgram>();
+        foreach (IProgram program in PluginEngine.PluginsAndPrograms) {
+            installedPrograms.Add(program);
+            AddItemToStartMenu(program.Name);
+        }
+    }
+
+    private void AddItemToStartMenu(string programName) {
         GameObject startMenuItem = Instantiate((GameObject)Resources.Load("Virtual machine/Start Menu Item"));
         startMenuItem.transform.GetChild(0).GetComponent<Text>().text = programName;
         Form.AdaptiveAndShow(computerCanvas, startMenuItem.transform, startMenuViewport, 1);
@@ -69,9 +73,5 @@ public class VirtualMachine : MonoBehaviour
             Debug.Log("Удаление " + startMenuContent.GetChild(i).GetChild(0).GetComponent<Text>().text);
             Destroy(startMenuContent.GetChild(i).gameObject);
         }
-    }
-
-    public void Explode(int power) {
-        
     }
 }
